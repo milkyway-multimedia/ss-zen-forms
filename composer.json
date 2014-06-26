@@ -1,0 +1,19 @@
+{
+    "name"       : "milkyway-multimedia/silverstripe-zen-forms",
+    "description": "Allow you to decorate Silverstripe Forms before displaying, adding extra functionality",
+    "type"       : "silverstripe-module",
+    "keywords"   : ["forms bootstrap mwm"],
+    "license"    : "MIT",
+    "authors"    : [
+        {
+            "name" : "Mellisa Hankins",
+            "email": "mell@milkywaymultimedia.com.au"
+        }
+    ],
+    "require"    : {
+        "silverstripe/framework": "~3.1"
+    },
+    "extra"      : {
+        "installer-name": "mwm-zen-forms"
+    }
+}

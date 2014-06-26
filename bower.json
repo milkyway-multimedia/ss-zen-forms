@@ -1,0 +1,23 @@
+{
+    "name"           : "milkyway-multimedia/2.x-base",
+    "version"        : "0.1.0",
+    "private"        : true,
+    "dependencies"   : {},
+    "devDependencies": {
+        "lesshat"             : "~3.0",
+        "shape.less"          : "~0.1",
+        "font-awesome"        : "~4.1",
+        "animate.css"         : "~3.1",
+        "jquery"              : "~1.11",
+        "bootstrap"           : "~3.1",
+        "ratchet"             : "~2.0",
+        "WOW"                 : "~0.1",
+        "vex"                 : "~2.0",
+        "payment-webfont"     : "~0.9",
+        "html5-boilerplate"   : "~4",
+        "parsleyjs"           : "~2",
+        "jquery.complexify.js": "*",
+        "assets"              : "git@bitbucket.org:milkyway-multimedia/assets.git",
+        "email-cerberus"      : "https://github.com/TedGoas/Cerberus/archive/master.zip"
+    }
+}

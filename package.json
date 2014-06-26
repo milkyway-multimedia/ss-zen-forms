@@ -1,0 +1,26 @@
+{
+    "name"           : "milkyway-multimedia.2x-base",
+    "version"        : "0.1.0",
+    "private"        : true,
+    "devDependencies": {
+        "gulp"             : "~3",
+        "gulp-if"          : "~1.2",
+        "gulp-autoprefixer": "~0.0",
+        "gulp-browserify"  : "~0.5",
+        "gulp-cached"      : "~0.0",
+        "gulp-changed"     : "~0.3",
+        "gulp-clean"       : "~0.2",
+        "gulp-concat"      : "~2.2",
+        "gulp-filter"      : "~0.4",
+        "gulp-imagemin"    : "~0.6",
+        "gulp-jshint"      : "~1.5",
+        "gulp-less"        : "~1.2",
+        "gulp-minify-css"  : "~0.3",
+        "gulp-htmlmin"     : "~0.1",
+        "gulp-plumber"     : "~0.6",
+        "gulp-sass"        : "~0",
+        "gulp-uglify"      : "~0.2",
+        "gulp-uncss"       : "~0.4",
+        "yargs"            : "1.2"
+    }
+}
