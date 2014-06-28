@@ -28,13 +28,23 @@ class FormBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormDecorator {
 
     public function apply() {
         $original = $this->original();
+
         $this->onlySetIfNotSet('FormModalID', $original->FormName() . '-Modal');
+
+        FieldListBootstrapper::decorate($original->Fields());
+        FieldListBootstrapper::decorate($original->Actions());
+
         return $original->setTemplate($this->getTemplate());
     }
 
     public function remove() {
         $original = $this->original();
+
         $original->FormModalID = null;
+
+        FieldListBootstrapper::undecorate($original->Fields());
+        FieldListBootstrapper::undecorate($original->Actions());
+
         return $original->setTemplate(null);
     }
 } 

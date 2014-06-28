@@ -20,6 +20,11 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
         return $decorator->apply();
     }
 
+    public static function undecorate() {
+        $decorator = call_user_func_array(array('Object', 'create'), func_get_args());
+        return $decorator->remove();
+    }
+
     public function original() {
         $original = $this->originalItem;
 

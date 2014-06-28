@@ -19,6 +19,11 @@ abstract class BaseDecorator implements Decorator {
         return $decorator->applyCachedToOriginal()->apply();
     }
 
+    public static function undecorate() {
+        $decorator = call_user_func_array(array('Object', 'create'), func_get_args());
+        return $decorator->removeCachedFromOriginal()->remove();
+    }
+
     public function original() {
         $original = $this->originalItem;
 
@@ -42,5 +47,18 @@ abstract class BaseDecorator implements Decorator {
             foreach($this->_cached as $field => $value)
                 $original->$field = $value;
         }
+
+        return $this;
+    }
+
+    public function removeCachedFromOriginal() {
+        if(count($this->_cached)) {
+            $original = $this->original();
+
+            foreach($this->_cached as $field => $value)
+                $original->$field = null;
+        }
+
+        return $this;
     }
 } 
