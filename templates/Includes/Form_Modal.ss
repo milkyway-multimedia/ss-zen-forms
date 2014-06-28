@@ -1,5 +1,5 @@
 <% if not $FormOnly %>
-<div id="$FormModal" class="$ModalClasses" data-modal="modal">
+    <div id="<% if $FormModalID %>$FormModalID<% else %>{$FormName}-Modal<% end_if %>" class="<% if $FormModalClasses %>$FormModalClasses<% else %>modal fade<% end_if %>" data-modal="modal">
 	<div class="modal-dialog">
 	<div class="modal-content">
 

@@ -6,25 +6,60 @@ use Milkyway\ZenForms\Contracts\Decorator;
  * Milkyway Multimedia
  * AbstractFormDecorator.php
  *
+ * @todo One of these days some of this will used as a trait
+ *
  * @package reggardocolaianni.com
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-class AbstractFormDecorator extends \RequestHandler implements Decorator {
-    protected $original;
+abstract class AbstractFormDecorator extends \RequestHandler implements Decorator {
+
+    protected $originalItem;
 
     public static function decorate() {
-        return call_user_func_array('create', func_get_args());
+        $decorator = call_user_func_array(array(get_called_class(), 'create'), func_get_args());
+        return $decorator->apply();
+    }
+
+    public function original() {
+        $original = $this->originalItem;
+
+        if($original instanceof Decorator)
+            $original = $original->original();
+
+        return $original;
+    }
+
+    /**
+     * Iterate until we reach the original object
+     * A bit hacky but if it works, it works
+     *
+     * @param SS_HTTPRequest $request
+     * @param DataModel      $model
+     *
+     * @return array|\RequestHandler|\SS_HTTPResponse|string
+     */
+    public function handleRequest(SS_HTTPRequest $request, DataModel $model) {
+        return $this->original()->handleRequest($request, $model);
     }
 
     public function __construct() {
         $args = func_get_args();
 
         if(!count($args))
-            throw new \LogicException('A decorator requires the original object passed as the first argument');
+            throw new \LogicException('A decorator requires the original Form passed as the first argument');
 
         parent::__construct();
 
-        $this->original = $args[0];
+        $this->originalItem = $args[0];
         $this->failover = $args[0];
+    }
+
+    public function onlySetIfNotSet($field, $value) {
+        $original = $this->original();
+
+        if(!isset($original->$field))
+            $original->$field = $value;
+
+        return $this;
     }
 } 

@@ -5,6 +5,36 @@
  * @package reggardocolaianni.com
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-class FormBootstrapper {
+class FormBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormDecorator {
+    public static function reset_template_for(\Milkyway\ZenForms\Contracts\Decorator $item, $templateName) {
+        $template = $item->original()->getTemplate();
+        if(is_array($template))
+            $template = array_pop($template);
 
+        $templates = array();
+
+        if($template && $template != $item->class)
+            $templates[] = $template;
+
+        $templates[] = $templateName;
+        $templates[] = $item->class;
+
+        return $templates;
+    }
+
+    public function getTemplate() {
+        return FormBootstrapper::reset_template_for($this, 'MWMForm');
+    }
+
+    public function apply() {
+        $original = $this->original();
+        $this->onlySetIfNotSet('FormModalID', $original->FormName() . '-Modal');
+        return $original->setTemplate($this->getTemplate());
+    }
+
+    public function remove() {
+        $original = $this->original();
+        $original->FormModalID = null;
+        return $original->setTemplate(null);
+    }
 } 

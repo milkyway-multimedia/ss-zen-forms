@@ -10,10 +10,7 @@
  *
  */
 interface Decorator {
-
-    function __call($name, $arguments);
-
-    function __get($name);
-
-    function __set($name, $value);
+    function apply();
+    function remove();
+    function original();
 }
