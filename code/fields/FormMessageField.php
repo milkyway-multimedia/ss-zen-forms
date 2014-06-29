@@ -72,12 +72,14 @@ class FormMessageField extends LiteralField {
 	public function Field($properties = array()) {
 		if($this->addDefaultClasses) {
 			if($this->cms)
-				$this->addExtraClass('message ' . $this->type);
+				$this->addExtraClass('message');
 			else
-				$this->addExtraClass($this->component . ' ' . $this->type);
+				$this->addExtraClass($this->component);
 		}
 
-		$attributes = $this->JSONAttributesHTML;
+        $this->addExtraClass($this->type);
+
+		$attributes = $this->AttributesHTML;
 		$attributes = trim($attributes) ? ' ' . $attributes : '';
 
 		return sprintf('<%s %s>%s</%s>',

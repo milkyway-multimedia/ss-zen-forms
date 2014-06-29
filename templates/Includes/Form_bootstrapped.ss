@@ -1,7 +1,7 @@
 <% if $IncludeFormTag %>
 <form $AttributesHTML>
 <% end_if %>
-	<% include MWMForm_Message %>
+    <% include FormMessage_bootstrapped %>
 	
 	<fieldset $FieldsetAttributesHTML>
 		<% if $Legend %><legend>$Legend</legend><% end_if %>
@@ -19,7 +19,7 @@
 	<% end_if %>
 <% if $IncludeFormTag %>
 
-<div $ModalAttributesHTML>
+<div id="<% if $FormModalID %>$FormModalID<% else %>{$FormName}-Modal<% end_if %>" class="<% if $FormModalClasses %>$FormModalClasses<% else %>modal fade<% end_if %>" data-modal="modal">
 	<div class="modal-dialog">
 	<div class="modal-content">
 	  <div class="modal-header">

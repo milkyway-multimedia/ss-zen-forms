@@ -8,7 +8,9 @@
 class FieldListBootstrapper extends \Milkyway\ZenForms\Model\BaseDecorator {
     public function apply() {
         $original = $this->original();
-        return $this->applyToFields($original);
+        if(!$this->decorator) $this->decorator = new FormFieldBootstrapper(new HiddenField('---- Decorator'));
+        $this->applyToFields($original);
+        return $original;
     }
 
     public function applyToFields(FieldList $fields) {
@@ -18,15 +20,14 @@ class FieldListBootstrapper extends \Milkyway\ZenForms\Model\BaseDecorator {
 			elseif($field->children && $field->children instanceof $fields)
                 $this->applyToFields($field);
 
-            return $this->decorator($field)->apply();
+            $this->useDecoratorOn($field)->apply();
         }
-
-        return $fields;
     }
 
     public function remove() {
         $original = $this->original();
-        return $this->removeFromFields($original);
+        $this->removeFromFields($original);
+        return parent::apply();
     }
 
     public function removeFromFields(FieldList $fields) {
@@ -36,18 +37,13 @@ class FieldListBootstrapper extends \Milkyway\ZenForms\Model\BaseDecorator {
             elseif($field->children && $field->children instanceof $fields)
                 $this->removeFromFields($field);
 
-            return $this->decorator($field)->remove();
+            return $this->useDecoratorOn($field)->remove();
         }
-
-        return $fields;
     }
 
     protected $decorator;
 
-    protected function decorator($field) {
-        if(!$this->decorator)
-            $this->decorator = new FormFieldBootstrapper($field);
-
+    protected function useDecoratorOn($field) {
         return $this->decorator->setOriginal($field);
     }
 } 

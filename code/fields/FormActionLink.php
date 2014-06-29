@@ -71,7 +71,7 @@ class FormActionLink extends LiteralField {
 				$this->addExtraClass('btn');
 		}
 
-		$attributes = $this->JSONAttributesHTML;
+		$attributes = $this->AttributesHTML;
 		$attributes = trim($attributes) ? ' ' . $attributes : '';
 
 		if(is_object($this->content)) {

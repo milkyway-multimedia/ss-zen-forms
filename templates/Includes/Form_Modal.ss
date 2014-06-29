@@ -15,7 +15,7 @@
 
 	<div class="modal-body" id="{$FormName}-Modal-Content" role="content">
 
-    <% include MWMForm_Message %>
+    <% include FormMessage_bootstrapped %>
 
 	<fieldset $FieldsetAttributesHTML>
 		<% if $Legend %><legend>$Legend</legend><% end_if %>

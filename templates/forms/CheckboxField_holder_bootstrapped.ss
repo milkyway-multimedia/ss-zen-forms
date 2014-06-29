@@ -1,8 +1,7 @@
-<div id="$ID-Holder" class="$HolderClasses bootstrap-field-holder {$Type}-holder field" $HolderAttributesHTML>
-    <label class="control-label $LabelClasses" $LabelAttributesHTML>
-        <% if $Label %>$Label<% else %>$Title<% end_if %>
-        <% if $Label || $Title %>
-            <% if $Form && $Form.AppendToRequiredLabels && $isRequired %> $Form.AppendToRequiredLabels<% end_if %>
+<div id="$ID-Holder" $HolderAttributesHTML>
+    <label id="$ID-Label" for="$ID" $LabelAttributesHTML>
+        <% if $RightTitle %>
+            $RightTitle
         <% end_if %>
     </label>
     <div class="controls">
@@ -14,9 +13,12 @@
           $Field
         <% end_if %>
 
-        <% if $RightTitle %>
-		    <label class="help-inline control-label-right" for="$ID">$RightTitle</label>
-        <% end_if %>
+	        <label for="$ID" class="help-inline control-label-right">
+                <% if $Label %>$Label<% else %>$Title<% end_if %>
+                <% if $Label || $Title %>
+                    <% if $Form && $Form.AppendToRequiredLabels && $isRequired %> $Form.AppendToRequiredLabels<% end_if %>
+                <% end_if %>
+	        </label>
         
         <% if $isRequired && $RequiredText %>
         	<i class="required-sign $RequiredIcon<% if $RequiredText %> field-popover data-content="$RequiredText<% end_if %>" data-for="{$ID}"></i>

@@ -11,16 +11,21 @@ use Milkyway\ZenForms\Contracts\Decorator;
  */
 abstract class BaseDecorator implements Decorator {
     protected $originalItem;
+    protected $failover;
 
     protected $_cached = array();
 
     public static function decorate() {
-        $decorator = call_user_func_array(array('Object', 'create'), func_get_args());
+        $args = func_get_args();
+        array_unshift($args, get_called_class());
+        $decorator = call_user_func_array(array('Object', 'create'), $args);
         return $decorator->applyCachedToOriginal()->apply();
     }
 
     public static function undecorate() {
-        $decorator = call_user_func_array(array('Object', 'create'), func_get_args());
+        $args = func_get_args();
+        array_shift($args, get_called_class());
+        $decorator = call_user_func_array(array('Object', 'create'), $args);
         return $decorator->removeCachedFromOriginal()->remove();
     }
 
@@ -65,5 +70,15 @@ abstract class BaseDecorator implements Decorator {
         }
 
         return $this;
+    }
+
+    public function __construct() {
+        $args = func_get_args();
+
+        if(!count($args))
+            throw new \LogicException('A decorator requires the original Form passed as the first argument');
+
+        $this->originalItem = $args[0];
+        $this->failover = $args[0];
     }
 } 
