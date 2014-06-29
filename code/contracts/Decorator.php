@@ -13,4 +13,5 @@ interface Decorator {
     function apply();
     function remove();
     function original();
+    function setOriginal($original);
 }

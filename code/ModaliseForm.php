@@ -7,12 +7,10 @@
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
 class ModaliseForm extends FormBootstrapper {
+    public $template = array('Form_Modal', 'Form_Bootstrapped');
+
     public function __construct($original, $title = '') {
         parent::__construct($original);
         $original->FormModalTitle = $title;
-    }
-
-    public function getTemplate() {
-        return FormBootstrapper::reset_template_for($this, 'Form_Modal');
     }
 } 

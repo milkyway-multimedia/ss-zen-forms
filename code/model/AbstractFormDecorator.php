@@ -34,6 +34,11 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
         return $original;
     }
 
+    public function setOriginal($original = null) {
+        $this->originalItem = $original;
+        return $this;
+    }
+
     /**
      * Iterate until we reach the original object
      * A bit hacky but if it works, it works

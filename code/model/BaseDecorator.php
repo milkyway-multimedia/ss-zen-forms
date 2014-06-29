@@ -33,6 +33,11 @@ abstract class BaseDecorator implements Decorator {
         return $original;
     }
 
+    public function setOriginal($original = null) {
+        $this->originalItem = $original;
+        return $this;
+    }
+
     public function onlySetIfNotSet($field, $value) {
         if(!isset($this->original()->$field))
             $this->_cached[$field] = $value;

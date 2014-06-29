@@ -6,24 +6,40 @@
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
 class FormBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormDecorator {
+    public $template = 'Form_Bootstrapped';
+
     public static function reset_template_for(\Milkyway\ZenForms\Contracts\Decorator $item, $templateName) {
-        $template = $item->original()->getTemplate();
-        if(is_array($template))
-            $template = array_pop($template);
+        $originalTemplates = $item->original()->getTemplate();
+
+        if(is_array($originalTemplates)) {
+            $template = array_pop($originalTemplates);
+        }
+        else {
+            $template = $originalTemplates;
+            $originalTemplates = null;
+        }
 
         $templates = array();
 
         if($template && $template != $item->class)
             $templates[] = $template;
 
-        $templates[] = $templateName;
+        if(is_string($templateName))
+            $templates[] = $templateName;
+        else
+            $templates = array_merge($templates, $templateName);
+
+        if($originalTemplates && count($originalTemplates)) {
+            $templates = array_merge($templates, $originalTemplates);
+        }
+
         $templates[] = $item->class;
 
         return $templates;
     }
 
     public function getTemplate() {
-        return FormBootstrapper::reset_template_for($this, 'MWMForm');
+        return FormBootstrapper::reset_template_for($this, $this->template);
     }
 
     public function apply() {
