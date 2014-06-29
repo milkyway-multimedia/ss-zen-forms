@@ -9,5 +9,5 @@
 		<div id="{$FormName}-Alert" class="alert $MessageType wow subtle-bounce">$Message</div>
     <% end_if %>
 <% else %>
-	<div id="{$FormName}-Alert" class="alert hide"></div>
+	<div id="{$FormName}-Alert" class="alert wow hide"></div>
 <% end_if %>

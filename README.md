@@ -1,5 +1,9 @@
 Zen Forms
 ======
+
+## Still in heavy development
+Due to some limitations, this may not work the way I want it, so the API will be changing frequently until I am happy with it. Please use with caution if you must use it at all.
+
 **Zen Forms** is a module that allows changes on Silverstripe Forms and Validators using the decorator pattern. Name stolen from some other awesome Silverstripe Developers @sheadawson and @unclecheese
 
 #### Decorator Pattern?
