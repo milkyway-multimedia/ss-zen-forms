@@ -61,7 +61,7 @@ class FormFieldBootstrapper extends \Milkyway\ZenForms\Model\BaseDecorator {
             if(!$field->getAttribute('data-loading-text'))
                 $field->setAttribute('data-loading-text', _t('LOADING...', 'Loading...'));
         }
-        elseif(!($field instanceof LiteralField)) {
+        elseif(!($field instanceof LiteralField) && !($field instanceof HeaderField) && !($field instanceof CompositeField)) {
             $field->addExtraClass('form-control');
         }
     }
@@ -88,6 +88,8 @@ class FormFieldBootstrapper extends \Milkyway\ZenForms\Model\BaseDecorator {
             $attributes = FormBootstrapper::get_attributes_from_tag($field->HolderAttributesHTML);
 
         $attributes['class'] = $attributes['class'] . ' ' . $field->Type() . '-holder';
+        if($field instanceof CompositeField)
+            $attributes['class'] = trim(str_replace(array('field', 'form-group'), '', $attributes['class']));
         $field->HolderAttributesHTML = FormBootstrapper::get_attributes_for_tag($attributes, array('id'));
     }
 
