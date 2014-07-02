@@ -20,6 +20,9 @@ Decorators work on a **per instance** rather than on a **per class** basis, and 
 
 If you prefer the extensions version, unclecheese offers the **bootstrap-form extensionby @unclecheese**.
 
+## Caveats
+Unfortunately, when you use a decorator you cannot chain methods and then return what is returned from the chained method, since it will be an instance of form. When you return the form from a method in your controller, it should be an instance of Decorator to have templates and methods properly overriden.
+
 ## Install
 Add the following to your composer.json file
 ```
@@ -37,9 +40,6 @@ It is quite simple to use and easy to make your own. For example, if you would l
 
     // $form now has FormBootstrapper methods attached, as well as the underlying form methods
     $form = new Form_Bootstrapped(new Form($controller, $name, $fields, $actions));
-
-    // Or if you are a chain freak
-    $form = Form_Bootstrapped::decorate(new Form($controller, $name, $fields, $actions));
 
 ```
 

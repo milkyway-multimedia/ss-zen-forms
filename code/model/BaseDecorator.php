@@ -9,28 +9,20 @@ use Milkyway\ZenForms\Contracts\Decorator;
  * @package reggardocolaianni.com
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-abstract class BaseDecorator implements Decorator {
-    protected $originalItem;
-    protected $failover;
-
-    protected $_cached = array();
+abstract class BaseDecorator extends \ViewableData implements Decorator {
+    protected $pullUp;
 
     public static function decorate() {
-        $args = func_get_args();
-        array_unshift($args, get_called_class());
-        $decorator = call_user_func_array(array('Object', 'create'), $args);
-        return $decorator->applyCachedToOriginal()->apply();
+        return call_user_func_array(array(get_called_class(), 'create'), func_get_args());
     }
 
-    public static function undecorate() {
-        $args = func_get_args();
-        array_shift($args, get_called_class());
-        $decorator = call_user_func_array(array('Object', 'create'), $args);
-        return $decorator->removeCachedFromOriginal()->remove();
+    public function __construct($original) {
+        $this->pullUp = $original;
+        $this->failover = $original;
     }
 
     public function original() {
-        $original = $this->originalItem;
+        $original = $this->pullUp;
 
         if($original instanceof Decorator)
             $original = $original->original();
@@ -38,47 +30,16 @@ abstract class BaseDecorator implements Decorator {
         return $original;
     }
 
-    public function setOriginal($original = null) {
-        $this->originalItem = $original;
-        return $this;
+    public function up() {
+        return $this->pullUp;
     }
 
     public function onlySetIfNotSet($field, $value) {
-        if(!isset($this->original()->$field))
-            $this->_cached[$field] = $value;
+        $original = $this->original();
+
+        if(!isset($original->$field))
+            $original->$field = $value;
 
         return $this;
-    }
-
-    public function applyCachedToOriginal() {
-        if(count($this->_cached)) {
-            $original = $this->original();
-
-            foreach($this->_cached as $field => $value)
-                $original->$field = $value;
-        }
-
-        return $this;
-    }
-
-    public function removeCachedFromOriginal() {
-        if(count($this->_cached)) {
-            $original = $this->original();
-
-            foreach($this->_cached as $field => $value)
-                $original->$field = null;
-        }
-
-        return $this;
-    }
-
-    public function __construct() {
-        $args = func_get_args();
-
-        if(!count($args))
-            throw new \LogicException('A decorator requires the original Form passed as the first argument');
-
-        $this->originalItem = $args[0];
-        $this->failover = $args[0];
     }
 } 

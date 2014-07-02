@@ -5,124 +5,72 @@
  * @package reggardocolaianni.com
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-class FormFieldBootstrapper extends \Milkyway\ZenForms\Model\BaseDecorator {
+class FormFieldBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormFieldDecorator {
     public $templateSuffix = '_bootstrapped';
 
-    protected $defaultHolderAttributes = array(
-        'class' => 'form-group bootstrapped-field-holder field',
-    );
-
     protected $holderAttributes = array();
-
-    protected $defaultLabelAttributes = array(
-        'class' => 'control-label',
+    protected $holderClasses = array(
+        'form-group',
+        'bootstrapped-field-holder',
     );
 
     protected $labelAttributes = array();
+    protected $labelClasses = array(
+        'control-label',
+    );
 
-    public function __construct() {
-        $args = func_get_args();
-
-        call_user_func_array('parent::__construct', $args);
-        array_shift($args);
-
-        list($holderAttributes, $labelAttributes) = array_pad($args, -2, null);
-
-        if($holderAttributes && count($holderAttributes))
-            $this->holderAttributes = array_merge_recursive($this->defaultHolderAttributes, $holderAttributes);
-        else
-            $this->holderAttributes = $this->defaultHolderAttributes;
-
-        if($labelAttributes && count($labelAttributes))
-            $this->labelAttributes = array_merge_recursive($this->defaultLabelAttributes, $labelAttributes);
-        else
-            $this->labelAttributes = $this->defaultLabelAttributes;
+    public function __construct($original) {
+        parent::__construct($original);
+        $this->addExtraClassesAndAttributes();
     }
 
-    public function apply() {
-        $original = $this->original();
+    public function addExtraClassesAndAttributes() {
+        $field = $this->original();
 
-        $this->addHolderAttributes($original);
-        $this->addLabelAttributes($original);
-        $this->addExtraClassesAndAttributes($original);
-
-        $this->applyFieldHolderTemplate($original);
-        $this->applySmallFieldHolderTemplate($original);
-        $this->applyTemplate($original);
-
-        return $original;
-    }
-
-    public function addExtraClassesAndAttributes($field) {
         if($field instanceof FormAction
            || $field instanceof FormActionLink) {
-            $field->addExtraClass('btn');
+            $this->addExtraClass('btn');
 
-            if(!$field->getAttribute('data-loading-text'))
-                $field->setAttribute('data-loading-text', _t('LOADING...', 'Loading...'));
+            if(!$this->getAttribute('data-loading-text'))
+                $this->setAttribute('data-loading-text', _t('LOADING...', 'Loading...'));
         }
         elseif(!($field instanceof LiteralField) && !($field instanceof HeaderField) && !($field instanceof CompositeField)) {
-            $field->addExtraClass('form-control');
+            $this->addExtraClass('form-control');
         }
     }
 
-    public function applyFieldHolderTemplate($field) {
-        if($field->FieldHolderTemplate) return;
-        $this->applyTemplates($field, 'FieldHolder');
+    public function getFieldHolderTemplates() {
+        return $this->suffixTemplates($this->up()->getFieldHolderTemplates());
     }
 
-    public function applySmallFieldHolderTemplate($field) {
-        if($field->SmallFieldHolderTemplate) return;
-        $this->applyTemplates($field, 'SmallFieldHolder');
+    public function getSmallFieldHolderTemplates() {
+        return $this->suffixTemplates($this->up()->getSmallFieldHolderTemplates());
     }
 
-    public function applyTemplate($field) {
-        if($field->Template) return;
-        $this->applyTemplates($field);
+    public function getTemplates() {
+        return $this->suffixTemplates($this->up()->getTemplates());
     }
 
-    public function addHolderAttributes($field) {
-        if(!$field->HolderAttributesHTML)
-            $attributes = $this->holderAttributes;
-        else
-            $attributes = FormBootstrapper::get_attributes_from_tag($field->HolderAttributesHTML);
-
-        $attributes['class'] = $attributes['class'] . ' ' . $field->Type() . '-holder';
-        if($field instanceof CompositeField)
-            $attributes['class'] = trim(str_replace(array('field', 'form-group'), '', $attributes['class']));
-        $field->HolderAttributesHTML = FormBootstrapper::get_attributes_for_tag($attributes, array('id'));
+    public function HolderAttributesHTML() {
+        $attributes = $this->holderAttributes;
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . implode(' ', $this->holderClasses) : implode(' ', $this->holderClasses);
+        return FormBootstrapper::get_attributes_for_tag($attributes, array('id'));
     }
 
-    public function addLabelAttributes($field) {
-        if(!$field->LabelAttributesHTML)
-            $field->LabelAttributesHTML = FormBootstrapper::get_attributes_for_tag($this->labelAttributes, array('id', 'for'));
+    public function LabelAttributesHTML() {
+        $attributes = $this->labelAttributes;
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . implode(' ', $this->labelClasses) : implode(' ', $this->labelClasses);
+        return FormBootstrapper::get_attributes_for_tag($attributes, array('id', 'for'));
     }
 
-    public function remove() {
-        $original = $this->original();
-        return $original;
-    }
-
-    protected function applyTemplates($field, $type = '')
+    protected function suffixTemplates(array $templates)
     {
-        $getMethod = 'get' . $type . 'Templates';
-        $setMethod = 'set' . $type . 'Template';
+        $new = array();
 
-        $templates = $field->$getMethod();
-        $new       = '';
-
-        foreach ($templates as $template)
-        {
-            if (SSViewer::hasTemplate($template . $this->templateSuffix))
-            {
-                $new = $template . $this->templateSuffix;
-                break;
-            }
+        foreach($templates as $template) {
+            $new[] = $template . $this->templateSuffix;
         }
 
-        if ($new)
-        {
-            $field->$setMethod($new);
-        }
+        return array_unique(array_merge($new, $templates));
     }
 } 

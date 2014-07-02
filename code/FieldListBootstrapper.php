@@ -6,10 +6,15 @@
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
 class FieldListBootstrapper extends \Milkyway\ZenForms\Model\BaseDecorator {
+    public function __construct($original) {
+        parent::__construct($original);
+        $this->apply();
+    }
+
     public function apply() {
-        $original = $this->original();
-        if(!$this->decorator) $this->decorator = new FormFieldBootstrapper(new HiddenField('---- Decorator'));
+        $original = $this->up();
         $this->applyToFields($original);
+        //$this->setForm($original);
         return $original;
     }
 
@@ -20,7 +25,7 @@ class FieldListBootstrapper extends \Milkyway\ZenForms\Model\BaseDecorator {
 			elseif($field->children && $field->children instanceof $fields)
                 $this->applyToFields($field);
 
-            $this->useDecoratorOn($field)->apply();
+            $this->replaceField($field->Name, $item = FormFieldBootstrapper::create($field));
         }
     }
 
@@ -37,13 +42,8 @@ class FieldListBootstrapper extends \Milkyway\ZenForms\Model\BaseDecorator {
             elseif($field->children && $field->children instanceof $fields)
                 $this->removeFromFields($field);
 
-            return $this->useDecoratorOn($field)->remove();
+            if($field instanceof \Milkyway\ZenForms\Contracts\Decorator)
+                $this->replaceField($field->Name, $field->original());
         }
-    }
-
-    protected $decorator;
-
-    protected function useDecoratorOn($field) {
-        return $this->decorator->setOriginal($field);
     }
 } 

@@ -13,20 +13,14 @@ use Milkyway\ZenForms\Contracts\Decorator;
  */
 abstract class AbstractFormDecorator extends \RequestHandler implements Decorator {
 
-    protected $originalItem;
+    protected $pullUp;
 
     public static function decorate() {
-        $decorator = call_user_func_array(array(get_called_class(), 'create'), func_get_args());
-        return $decorator->apply();
-    }
-
-    public static function undecorate() {
-        $decorator = call_user_func_array(array('Object', 'create'), func_get_args());
-        return $decorator->remove();
+        return call_user_func_array(array(get_called_class(), 'create'), func_get_args());
     }
 
     public function original() {
-        $original = $this->originalItem;
+        $original = $this->pullUp;
 
         if($original instanceof Decorator)
             $original = $original->original();
@@ -34,9 +28,8 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
         return $original;
     }
 
-    public function setOriginal($original = null) {
-        $this->originalItem = $original;
-        return $this;
+    public function up() {
+        return $this->pullUp;
     }
 
     /**
@@ -52,16 +45,9 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
         return $this->original()->handleRequest($request, $model);
     }
 
-    public function __construct() {
-        $args = func_get_args();
-
-        if(!count($args))
-            throw new \LogicException('A decorator requires the original Form passed as the first argument');
-
-        parent::__construct();
-
-        $this->originalItem = $args[0];
-        $this->failover = $args[0];
+    public function __construct($original) {
+        $this->pullUp = $original;
+        $this->failover = $original;
     }
 
     public function onlySetIfNotSet($field, $value) {
@@ -71,5 +57,96 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
             $original->$field = $value;
 
         return $this;
+    }
+
+    /**
+     * The following methods override the render of the form, to use the methods
+     * of the decorator(s) rather than the form methods when required
+     */
+
+    /** Return a rendered version of this form.
+     *
+     * This is returned when you access a form as $FormObject rather
+     * than <% with FormObject %>
+     *
+     * @return HTML
+     */
+    public function forTemplate() {
+        $return = $this->renderWith(array_merge(
+                (array)$this->getTemplate(),
+                array('Form')
+            ));
+
+        // Now that we're rendered, clear message
+        $this->clearMessage();
+
+        return $return;
+    }
+
+    /**
+     * Return a rendered version of this form, suitable for ajax post-back.
+     *
+     * It triggers slightly different behaviour, such as disabling the rewriting
+     * of # links.
+     *
+     * @return HTML
+     */
+    public function forAjaxTemplate() {
+        $view = new SSViewer(array(
+            $this->getTemplate(),
+            'Form'
+        ));
+
+        $return = $view->dontRewriteHashlinks()->process($this);
+
+        // Now that we're rendered, clear message
+        $this->clearMessage();
+
+        return $return;
+    }
+
+    /**
+     * Returns an HTML rendition of this form, without the <form> tag itself.
+     *
+     * Attaches 3 extra hidden files, _form_action, _form_name, _form_method,
+     * and _form_enctype.  These are the attributes of the form.  These fields
+     * can be used to send the form to Ajax.
+     *
+     * @return HTML
+     */
+    public function formHtmlContent() {
+        $this->IncludeFormTag = false;
+        $content = $this->forTemplate();
+        $this->IncludeFormTag = true;
+
+        $content .= "<input type=\"hidden\" name=\"_form_action\" id=\"" . $this->FormName . "_form_action\""
+                    . " value=\"" . $this->FormAction() . "\" />\n";
+        $content .= "<input type=\"hidden\" name=\"_form_name\" value=\"" . $this->FormName() . "\" />\n";
+        $content .= "<input type=\"hidden\" name=\"_form_method\" value=\"" . $this->FormMethod() . "\" />\n";
+        $content .= "<input type=\"hidden\" name=\"_form_enctype\" value=\"" . $this->getEncType() . "\" />\n";
+
+        return $content;
+    }
+
+    /**
+     * Render this form using the given template, and return the result as a
+     * string.
+     *
+     * You can pass either an SSViewer or a template name.
+     *
+     * @param SSViewer|string $template
+     *
+     * @return HTML
+     */
+    public function renderWithoutActionButton($template) {
+        $custom = $this->customise(array(
+                "Actions" => "",
+            ));
+
+        if(is_string($template)) {
+            $template = new SSViewer($template);
+        }
+
+        return $template->process($custom);
     }
 } 

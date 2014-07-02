@@ -9,7 +9,7 @@ class FormBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormDecorator {
     public $template = 'Form_bootstrapped';
 
     public static function reset_template_for(\Milkyway\ZenForms\Contracts\Decorator $item, $templateName) {
-        $originalTemplates = $item->original()->getTemplate();
+        $originalTemplates = $item->up()->getTemplate();
 
         if(is_array($originalTemplates)) {
             $template = array_pop($originalTemplates);
@@ -74,25 +74,14 @@ class FormBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormDecorator {
         return FormBootstrapper::reset_template_for($this, $this->template);
     }
 
-    public function apply() {
-        $original = $this->original();
-
-        $this->onlySetIfNotSet('FormModalID', $original->FormName() . '-Modal');
+    public function __construct($original) {
+        parent::__construct($original);
 
         FieldListBootstrapper::decorate($original->Fields());
         FieldListBootstrapper::decorate($original->Actions());
-
-        return $original->setTemplate($this->getTemplate());
     }
 
-    public function remove() {
-        $original = $this->original();
-
-        $original->FormModalID = null;
-
-        FieldListBootstrapper::undecorate($original->Fields());
-        FieldListBootstrapper::undecorate($original->Actions());
-
-        return $original->setTemplate(null);
+    public function FormModalID() {
+        return $this->original()->FormName() . '-Modal';
     }
 } 
