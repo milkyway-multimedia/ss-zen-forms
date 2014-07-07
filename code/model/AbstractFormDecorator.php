@@ -41,7 +41,7 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
      *
      * @return array|\RequestHandler|\SS_HTTPResponse|string
      */
-    public function handleRequest(SS_HTTPRequest $request, DataModel $model) {
+    public function handleRequest(\SS_HTTPRequest $request, DataModel $model) {
         return $this->original()->handleRequest($request, $model);
     }
 

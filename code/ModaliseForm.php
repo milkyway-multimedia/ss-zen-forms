@@ -16,7 +16,7 @@ class ModaliseForm extends FormBootstrapper {
         $this->title = $title;
     }
 
-    public function getModalTitle() {
+    public function getFormModalTitle() {
         return $this->title;
     }
 } 

@@ -23,7 +23,7 @@ class FieldListBootstrapper extends \Milkyway\ZenForms\Model\BaseDecorator {
             if($field->isComposite() && $field->hasMethod('FieldList'))
                 $this->applyToFields($field->FieldList());
 			elseif($field->children && $field->children instanceof $fields)
-                $this->applyToFields($field);
+                $this->applyToFields($field->children);
 
             $this->replaceField($field->Name, $item = FormFieldBootstrapper::create($field));
         }
