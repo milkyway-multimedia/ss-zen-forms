@@ -8,7 +8,7 @@ use Milkyway\ZenForms\Contracts\Decorator;
  *
  * @todo One of these days some of this will used as a trait
  *
- * @package reggardocolaianni.com
+ * @package milkyway-multimedia/mwm-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
 abstract class AbstractFormDecorator extends \RequestHandler implements Decorator {
@@ -41,7 +41,7 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
      *
      * @return array|\RequestHandler|\SS_HTTPResponse|string
      */
-    public function handleRequest(\SS_HTTPRequest $request, DataModel $model) {
+    public function handleRequest(\SS_HTTPRequest $request, \DataModel $model) {
         return $this->original()->handleRequest($request, $model);
     }
 
@@ -148,5 +148,13 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
         }
 
         return $template->process($custom);
+    }
+
+    public function __toString() {
+        return is_object($this->forTemplate()) ? $this->forTemplate()->Value : $this->forTemplate();
+    }
+
+    public function hasMethod($method) {
+        return $this->up()->hasMethod($method) || parent::hasMethod($method);
     }
 } 

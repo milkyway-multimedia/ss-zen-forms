@@ -6,7 +6,7 @@ use Milkyway\ZenForms\Contracts\Decorator;
  * Milkyway Multimedia
  * BaseDecorator.php
  *
- * @package reggardocolaianni.com
+ * @package milkyway-multimedia/mwm-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
 abstract class BaseDecorator extends \ViewableData implements Decorator {

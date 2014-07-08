@@ -2,7 +2,7 @@
  * Milkyway Multimedia
  * FormBootstrapper.php
  *
- * @package reggardocolaianni.com
+ * @package milkyway-multimedia/mwm-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
 class FormBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormDecorator {
@@ -21,7 +21,7 @@ class FormBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormDecorator {
 
         $templates = array();
 
-        if($template && !in_array($template, array($item->class, 'Form')))
+        if($template && !in_array($template, array(get_class($item->original()), 'Form')))
             $templates[] = $template;
 
         if(is_string($templateName))
@@ -36,7 +36,7 @@ class FormBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormDecorator {
         $templates[] = $item->class;
         $templates[] = 'Form';
 
-        $templates = array_unique($templates);
+        $templates = array_filter(array_unique($templates));
 
         return $templates;
     }
@@ -79,9 +79,5 @@ class FormBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormDecorator {
 
         FieldListBootstrapper::decorate($original->Fields());
         FieldListBootstrapper::decorate($original->Actions());
-    }
-
-    public function FormModalID() {
-        return $this->original()->FormName() . '-Modal';
     }
 } 

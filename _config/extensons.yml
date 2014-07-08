@@ -1,0 +1,7 @@
+---
+Name: mwm-zen-forms-extensions
+After: 'framework/*'
+---
+ConfirmedPasswordField:
+  extensions:
+    - \Milkyway\ZenForms\Extensions\ConfirmedPasswordField

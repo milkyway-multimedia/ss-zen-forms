@@ -2,7 +2,7 @@
  * Milkyway Multimedia
  * FormFieldBootstrapper.php
  *
- * @package reggardocolaianni.com
+ * @package milkyway-multimedia/mwm-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
 class FormFieldBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormFieldDecorator {
@@ -54,6 +54,7 @@ class FormFieldBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormFieldDe
     public function HolderAttributesHTML() {
         $attributes = $this->holderAttributes;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . implode(' ', $this->holderClasses) : implode(' ', $this->holderClasses);
+        $attributes['class'] = $attributes['class'] . ' ' . $this->original()->Type() . '-holder';
         return FormBootstrapper::get_attributes_for_tag($attributes, array('id'));
     }
 
@@ -72,5 +73,13 @@ class FormFieldBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormFieldDe
         }
 
         return array_unique(array_merge($new, $templates));
+    }
+
+    public function collateDataFields(&$list, $saveableOnly = false) {
+        return $this->original()->collateDataFields($list, $saveableOnly);
+    }
+
+    public function __toString() {
+        return is_object($this->forTemplate()) ? $this->forTemplate()->Value : $this->FieldHolder();
     }
 } 

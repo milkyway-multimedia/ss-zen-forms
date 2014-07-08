@@ -2,7 +2,7 @@
 <form $AttributesHTML>
 <% end_if %>
     <% include FormMessage_bootstrapped %>
-	
+
 	<fieldset $FieldsetAttributesHTML>
 		<% if $Legend %><legend>$Legend</legend><% end_if %>
 		<% loop $Fields %>

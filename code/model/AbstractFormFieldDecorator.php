@@ -3,7 +3,7 @@
  * Milkyway Multimedia
  * AbstractFormFieldDecorator.php
  *
- * @package reggardocolaianni.com
+ * @package milkyway-multimedia/mwm-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
 abstract class AbstractFormFieldDecorator extends BaseDecorator {
@@ -22,12 +22,10 @@ abstract class AbstractFormFieldDecorator extends BaseDecorator {
      * @param array $properties key value pairs of template variables
      * @return string
      */
-    public function Field($properties = array()) {
-        $obj = ($properties) ? $this->customise($properties) : $this;
-        $original = $this->original();
-        $original->extend('onBeforeRender', $original);
-        return $obj->renderWith($this->getTemplates());
-    }
+//    public function Field($properties = array()) {
+//        $this->original()->setTemplate($this->getTemplates());
+//        return $this->original()->Field($properties);
+//    }
 
     /**
      * Returns a "field holder" for this field - used by templates.

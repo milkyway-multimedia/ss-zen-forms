@@ -2,7 +2,7 @@
  * Milkyway Multimedia
  * FieldListDecorator.php
  *
- * @package reggardocolaianni.com
+ * @package milkyway-multimedia/mwm-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
 class FieldListBootstrapper extends \Milkyway\ZenForms\Model\BaseDecorator {
@@ -18,14 +18,19 @@ class FieldListBootstrapper extends \Milkyway\ZenForms\Model\BaseDecorator {
         return $original;
     }
 
-    public function applyToFields(FieldList $fields) {
+    public function applyToFields($fields) {
         foreach($fields as $field) {
-            if($field->isComposite() && $field->hasMethod('FieldList'))
+            if($field instanceof LiteralField || $field instanceof HeaderField)
+                continue;
+            elseif($field->isComposite() && $field->hasMethod('FieldList'))
                 $this->applyToFields($field->FieldList());
-			elseif($field->children && $field->children instanceof $fields)
+			elseif(isset($field->children) && $field->children instanceof $fields)
                 $this->applyToFields($field->children);
 
-            $this->replaceField($field->Name, $item = FormFieldBootstrapper::create($field));
+            if(!$field->hasData() || $field->isComposite())
+                $fields->replace($field, FormFieldBootstrapper::create($field));
+            else
+                $this->replaceField($field->Name, FormFieldBootstrapper::create($field));
         }
     }
 

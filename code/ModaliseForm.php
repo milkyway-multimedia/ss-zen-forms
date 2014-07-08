@@ -3,7 +3,7 @@
  * Milkyway Multimedia
  * ModaliseForm.php
  *
- * @package reggardocolaianni.com
+ * @package milkyway-multimedia/mwm-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
 class ModaliseForm extends FormBootstrapper {

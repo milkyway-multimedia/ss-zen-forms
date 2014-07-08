@@ -1,0 +1,129 @@
+<?php namespace Milkyway\ZenForms\Extensions;
+
+class ConfirmedPasswordField extends Extension {
+
+    protected $usePasswordGenerator = false;
+    protected $measurePasswordStrength = true;
+    protected $measurePasswordValidator = null;
+
+    public function getLabel()
+    {
+        if ($title = $this->owner->Title())
+            return $title;
+        elseif ($field = $this->owner->PasswordField)
+        {
+            return $field->Title();
+        }
+
+        return '';
+    }
+
+    public function getLabelFor()
+    {
+        if ($field = $this->owner->PasswordField)
+            return $field->ID();
+        else
+            return $this->owner->ID();
+    }
+
+    public function addPasswordStrengthHelper($text = '')
+    {
+        $this->owner->PasswordStrengthHelper = $text ? $text : _t(
+            'ConfirmedPasswordField.PASSWORD_STRENGTH_HELPER',
+            '[strength]'
+        );
+
+        return $this->owner;
+    }
+
+    function usePasswordGenerator($do = true)
+    {
+        $this->usePasswordGenerator = $do;
+
+        return $this->owner;
+    }
+
+    function measurePasswordStrength($do = true, $validator = null)
+    {
+        $this->measurePasswordStrength  = $do;
+        $this->measurePasswordValidator = $validator;
+
+        return $this->owner;
+    }
+
+    function PasswordStrengthGuide()
+    {
+        return $this->measurePasswordStrength;
+    }
+
+    public function getVisibleOnClickField()
+    {
+        $name  = $this->owner->getName() . '[_PasswordFieldVisible]';
+        $field = $this->owner->children->fieldByName($name);
+
+        // Transforming hidden field to checkbox
+        if ($field instanceof \HiddenField)
+        {
+            $title    = $this->owner->ShowOnClickTitle ? $this->owner->ShowOnClickTitle : _t(
+                'ConfirmedPasswordField.CHANGE_YOUR_PASSWORD',
+                'Change your password'
+            );
+            $checkbox = $field->castedCopy('CheckboxField')->setTitle($title)->setForm(
+                $this->owner->Form
+            )->removeExtraClass('hidden')->addExtraClass('visible-if-trigger');
+            $this->owner->children->replaceField($name, $checkbox);
+            //$this->owner->setHolderAttribute('data-show-if', '#' . $checkbox->ID() . ':checked');
+        } else
+            $checkbox = $field;
+
+        return $checkbox;
+    }
+
+    public function getPasswordField()
+    {
+        $field = $this->owner->children->fieldByName($this->owner->getName() . '[_Password]');
+
+        if ($this->measurePasswordStrength)
+        {
+            if (! $this->measurePasswordValidator && $this->owner->Form && $this->owner->Form->Record && ($this->owner->Form->Record instanceof Member))
+                $this->measurePasswordValidator = \Member::password_validator();
+
+            if ($this->measurePasswordValidator)
+            {
+                $validatorSettings = $this->measurePasswordValidator->getSettingsForJS();
+
+                $settings = array(
+                    'strengthScaleFactor' => .4
+                );
+
+                if ($validatorSettings['MinLength'])
+                    $settings['minimumChars'] = $validatorSettings['MinLength'];
+                if ($validatorSettings['CheckFor'] && is_array($validatorSettings['CheckFor']))
+                {
+                    if (in_array('lowercase', $validatorSettings['CheckFor']))
+                        $settings['mustHaveLowercase'] = true;
+                    if (in_array('uppercase', $validatorSettings['CheckFor']))
+                        $settings['mustHaveUppercase'] = true;
+                    if (in_array('digits', $validatorSettings['CheckFor']))
+                        $settings['mustHaveDigit'] = true;
+                }
+
+                //$field->setAttribute('data-parsleypassword', json_encode($settings));
+
+                //$trigger = $field->hasValidationRule('trigger');
+                //$field->addValidationRule('trigger', trim($trigger . ' keyup'));
+                //$field->addValidationRule('password-message', $this->getPasswordValidatorText('', true));
+            }
+
+            $field->addExtraClass('password-measure');
+        }
+
+        return $field;
+    }
+
+    public function getConfirmPasswordField()
+    {
+        $field = $this->owner->children->fieldByName($this->owner->Name . '[_ConfirmPassword]');
+        return $field;
+    }
+}
