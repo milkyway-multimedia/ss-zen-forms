@@ -1,6 +1,6 @@
 <?php namespace Milkyway\ZenForms\Extensions;
 
-class ConfirmedPasswordField extends Extension {
+class ConfirmedPasswordField extends \Extension {
 
     protected $usePasswordGenerator = false;
     protected $measurePasswordStrength = true;
@@ -95,24 +95,6 @@ class ConfirmedPasswordField extends Extension {
                 $settings = array(
                     'strengthScaleFactor' => .4
                 );
-
-                if ($validatorSettings['MinLength'])
-                    $settings['minimumChars'] = $validatorSettings['MinLength'];
-                if ($validatorSettings['CheckFor'] && is_array($validatorSettings['CheckFor']))
-                {
-                    if (in_array('lowercase', $validatorSettings['CheckFor']))
-                        $settings['mustHaveLowercase'] = true;
-                    if (in_array('uppercase', $validatorSettings['CheckFor']))
-                        $settings['mustHaveUppercase'] = true;
-                    if (in_array('digits', $validatorSettings['CheckFor']))
-                        $settings['mustHaveDigit'] = true;
-                }
-
-                //$field->setAttribute('data-parsleypassword', json_encode($settings));
-
-                //$trigger = $field->hasValidationRule('trigger');
-                //$field->addValidationRule('trigger', trim($trigger . ' keyup'));
-                //$field->addValidationRule('password-message', $this->getPasswordValidatorText('', true));
             }
 
             $field->addExtraClass('password-measure');

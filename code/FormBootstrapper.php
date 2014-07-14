@@ -74,6 +74,11 @@ class FormBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormDecorator {
         return FormBootstrapper::reset_template_for($this, $this->template);
     }
 
+    public function ajaxify() {
+        $this->addExtraClass('ajax-submit');
+        return $this;
+    }
+
     public function __construct($original) {
         parent::__construct($original);
 

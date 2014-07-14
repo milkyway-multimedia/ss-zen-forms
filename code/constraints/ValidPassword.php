@@ -7,7 +7,10 @@
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
 class ValidPassword extends \ZenValidatorConstraint {
+    /** @var \PasswordValidator  */
     protected $validator = null;
+
+    /** @var float This is only used by the JS plugin - and is more of a guide */
     protected $strengthScaleFactor = 0.4;
 
     /**

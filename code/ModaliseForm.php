@@ -19,4 +19,8 @@ class ModaliseForm extends FormBootstrapper {
     public function getFormModalTitle() {
         return $this->title;
     }
+
+    function getFormModalID() {
+        return $this->FormName() . '-Modal';
+    }
 } 
