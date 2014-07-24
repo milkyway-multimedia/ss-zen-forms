@@ -1,4 +1,4 @@
-<?php namespace Milkyway\ZenForms\Model;
+<?php namespace Milkyway\SS\ZenForms\Model;
 /**
  * Milkyway Multimedia
  * AbstractFormFieldDecorator.php

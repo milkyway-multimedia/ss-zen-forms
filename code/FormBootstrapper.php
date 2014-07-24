@@ -5,10 +5,10 @@
  * @package milkyway-multimedia/mwm-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-class FormBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormDecorator {
+class FormBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormDecorator {
     public $template = 'Form_bootstrapped';
 
-    public static function reset_template_for(\Milkyway\ZenForms\Contracts\Decorator $item, $templateName) {
+    public static function reset_template_for(\Milkyway\SS\ZenForms\Contracts\Decorator $item, $templateName) {
         $originalTemplates = $item->up()->getTemplate();
 
         if(is_array($originalTemplates)) {

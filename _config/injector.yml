@@ -4,4 +4,4 @@ After: 'framework/*'
 ---
 Injector:
   PasswordValidator:
-    class: \Milkyway\ZenForms\Extensions\PasswordValidator
+    class: \Milkyway\SS\ZenForms\Extensions\PasswordValidator

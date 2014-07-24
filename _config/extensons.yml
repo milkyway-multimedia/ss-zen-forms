@@ -4,4 +4,4 @@ After: 'framework/*'
 ---
 ConfirmedPasswordField:
   extensions:
-    - \Milkyway\ZenForms\Extensions\ConfirmedPasswordField
+    - \Milkyway\SS\ZenForms\Extensions\ConfirmedPasswordField

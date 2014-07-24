@@ -5,7 +5,7 @@
  * @package milkyway-multimedia/mwm-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-class FieldListBootstrapper extends \Milkyway\ZenForms\Model\BaseDecorator {
+class FieldListBootstrapper extends \Milkyway\SS\ZenForms\Model\BaseDecorator {
     public function __construct($original) {
         parent::__construct($original);
         $this->apply();

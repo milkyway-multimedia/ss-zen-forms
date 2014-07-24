@@ -1,6 +1,6 @@
-<?php namespace Milkyway\ZenForms\Model;
+<?php namespace Milkyway\SS\ZenForms\Model;
 
-use Milkyway\ZenForms\Contracts\Decorator;
+use Milkyway\SS\ZenForms\Contracts\Decorator;
 
 /**
  * Milkyway Multimedia

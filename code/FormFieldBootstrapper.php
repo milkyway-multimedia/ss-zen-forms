@@ -5,7 +5,7 @@
  * @package milkyway-multimedia/mwm-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-class FormFieldBootstrapper extends \Milkyway\ZenForms\Model\AbstractFormFieldDecorator {
+class FormFieldBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormFieldDecorator {
     public $templateSuffix = '_bootstrapped';
 
     protected $holderAttributes = array();
