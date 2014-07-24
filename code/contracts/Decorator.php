@@ -1,4 +1,4 @@
-<?php namespace Milkyway\ZenForms\Contracts;
+<?php namespace Milkyway\SS\ZenForms\Contracts;
 /**
  * Milkyway Multimedia
  * Decorator.php

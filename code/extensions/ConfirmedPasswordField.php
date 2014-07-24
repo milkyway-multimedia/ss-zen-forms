@@ -1,4 +1,4 @@
-<?php namespace Milkyway\ZenForms\Extensions;
+<?php namespace Milkyway\SS\ZenForms\Extensions;
 
 class ConfirmedPasswordField extends \Extension {
 
