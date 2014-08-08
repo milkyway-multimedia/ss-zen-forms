@@ -44,17 +44,13 @@ class HasOneCompositeField extends CompositeField {
 
 	public function __construct($name, $record = null, FieldList $fields = null) {
 		$this->name = $name;
-		$this->record = $record;
+        $this->record = $record;
 
-		if(!$fields && $this->record) {
-			if($this->record->hasMethod('getHasOneCMSFields'))
-				$fields = $this->record->getHasOneCMSFields();
-			else
-				$fields = $this->record->getCMSFields();
+		if(!$fields && $this->record)
+            $fields = $this->fieldsFromRecord($this->record);
 
-			if($fields)
-				$fields = $fields->dataFields();
-		}
+        if(!$fields)
+            $fields = FieldList::create();
 
 		parent::__construct($fields);
 	}
@@ -67,6 +63,29 @@ class HasOneCompositeField extends CompositeField {
 	public function getRecord() {
 		return $this->record;
 	}
+
+    protected function recordFromForm() {
+        if($this->Form && $this->Form->Record) {
+            $relName = substr($this->name, -2) == 'ID' ? substr($this->name, -2, 2) : $this->name;
+
+            if($this->Form->Record->hasMethod($relName))
+                return $this->Form->Record->$relName();
+        }
+
+        return null;
+    }
+
+    protected function fieldsFromRecord($record) {
+        if($record->hasMethod('getHasOneCMSFields'))
+            $fields = $record->getHasOneCMSFields();
+        else
+            $fields = $record->getCMSFields();
+
+        if($fields)
+            return FieldList::create($fields->dataFields());
+
+        return FieldList::create();
+    }
 
 	public function setExtraData($data = array()) {
 		$this->extraData = $data;
@@ -211,6 +230,9 @@ class HasOneCompositeField extends CompositeField {
 
 	public function FieldList($prependName = true) {
 		$fields = parent::FieldList();
+
+        if((!$fields || !$fields->exists()) && $record = $this->recordFromForm())
+            $this->children = $fields = $this->fieldsFromRecord($record);
 
 		if($fields && $fields->exists()) {
 			if(!$this->originalFields)
