@@ -1,5 +1,5 @@
 {
-    "name"       : "milkyway-multimedia/silverstripe-zen-forms",
+    "name"       : "milkyway-multimedia/ss-zen-forms",
     "description": "Allow you to decorate Silverstripe Forms before displaying, adding extra functionality",
     "type"       : "silverstripe-module",
     "keywords"   : ["forms bootstrap mwm"],
