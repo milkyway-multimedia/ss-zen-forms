@@ -47,7 +47,7 @@ class FieldListBootstrapper extends \Milkyway\SS\ZenForms\Model\BaseDecorator {
             elseif($field->children && $field->children instanceof $fields)
                 $this->removeFromFields($field);
 
-            if($field instanceof \Milkyway\ZenForms\Contracts\Decorator)
+            if($field instanceof \Milkyway\SS\ZenForms\Contracts\Decorator)
                 $this->replaceField($field->Name, $field->original());
         }
     }

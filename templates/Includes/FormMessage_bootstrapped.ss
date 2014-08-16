@@ -6,7 +6,7 @@
     <% else_if $MessageType == "bad" %>
 		<div id="{$FormName}-Alert" class="alert alert-danger subtle-bounce animated">$Message</div>
     <% else %>
-		<div id="{$FormName}-Alert" class="alert $MessageType subtle-bounce animated">$Message</div>
+		<div id="{$FormName}-Alert" class="alert alert-$MessageType subtle-bounce animated">$Message</div>
     <% end_if %>
 <% else %>
 	<div id="{$FormName}-Alert" class="alert subtle-bounce hide invisible"></div>
