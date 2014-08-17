@@ -4,4 +4,11 @@ After: 'framework/*'
 ---
 Injector:
   PasswordValidator:
-    class: \Milkyway\SS\ZenForms\Extensions\PasswordValidator
+    class: \Milkyway\SS\ZenForms\Overrides\PasswordValidator
+---
+Only:
+  moduleexists: 'multivaluefield'
+---
+Injector:
+  KeyValueField:
+    class: \Milkyway\SS\ZenForms\Overrides\KeyValueField

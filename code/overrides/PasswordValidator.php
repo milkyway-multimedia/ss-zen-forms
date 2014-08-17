@@ -1,4 +1,4 @@
-<?php namespace Milkyway\SS\ZenForms\Extensions;
+<?php namespace Milkyway\SS\ZenForms\Overrides;
 /**
  * Milkyway Multimedia
  * PasswordValidator.php
