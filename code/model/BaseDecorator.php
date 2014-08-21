@@ -42,4 +42,9 @@ abstract class BaseDecorator extends \ViewableData implements Decorator {
 
         return $this;
     }
+
+	public function debug() {
+		$more = $this->up()->hasMethod('debug') ? $this->up()->debug() : 'none';
+		return 'Wrapped with ' . get_class($this) . ' - ' . $more;
+	}
 } 

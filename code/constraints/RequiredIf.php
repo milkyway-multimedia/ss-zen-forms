@@ -26,6 +26,7 @@ class RequiredIf extends \ZenValidatorConstraint {
     function __construct($field, $condition){
         $this->targetField = $field;
         $this->condition = $condition;
+
         parent::__construct();
     }
 
@@ -86,7 +87,8 @@ class RequiredIf extends \ZenValidatorConstraint {
     }
 
     protected function getFieldWithCondition() {
-        return '#' . $this->getTargetField()->getAttribute('id') . ':' . $this->condition;
+	    $condition = strpos($this->condition, '[') === 0 ? $this->condition : ':' . $this->condition;
+        return '#' . $this->getTargetField()->getAttribute('id') . $condition;
     }
 
     public function getNiceCondition() {
@@ -98,7 +100,7 @@ class RequiredIf extends \ZenValidatorConstraint {
                 return 'unchecked';
                 break;
             default:
-                return 'unknown';
+                return $this->condition;
             break;
         }
     }

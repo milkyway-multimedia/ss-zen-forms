@@ -8,3 +8,6 @@ ConfirmedPasswordField:
 FormField:
   extensions:
     - \Milkyway\SS\ZenForms\Extensions\FormField
+Form:
+  extensions:
+    - \Milkyway\SS\ZenForms\Extensions\Form
