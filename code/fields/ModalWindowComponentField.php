@@ -33,6 +33,10 @@ class ModalWindowComponentField extends ComponentFieldHolder {
 		return $this;
 	}
 
+	public function NoClose() {
+		return !$this->allowClose;
+	}
+
 	public function setModalTrigger($button = null) {
 		$this->modalTrigger = $button;
 		return $this;
@@ -62,6 +66,9 @@ class ModalWindowComponentField extends ComponentFieldHolder {
 			'aria-hidden' => true,
 		);
 
+		if(!$this->allowClose)
+			$attrs['data-backdrop'] = 'static';
+
 		return array_merge(parent::getAttributes(), $attrs, $this->attributes);
 	}
 
@@ -87,34 +94,38 @@ class ModalWindowComponentField extends ComponentFieldHolder {
 	}
 
 	public function Field($properties = array()) {
-		if(!isset($properties['modalID']))
-			$properties['modalID'] = $this->ID();
+		if(!isset($properties['ID']))
+			$properties['ID'] = $this->ID();
 
-		if(!isset($properties['modalTitle']) && $this->Title())
-			$properties['modalTitle'] = $this->Title();
+		if(!isset($properties['Title']) && $this->Title())
+			$properties['Title'] = $this->Title();
 
-		if(!isset($properties['modalAttributes']))
-			$properties['modalAttributes'] = $this->JSONAttributesHTML;
+		if(!isset($properties['AttributesHTML']))
+			$properties['AttributesHTML'] = $this->AttributesHTML;
 
-		if(!isset($properties['modalNoClose']) && !$this->allowClose)
-			$properties['modalNoClose'] = true;
+		if(!isset($properties['NoClose']) && !$this->allowClose)
+			$properties['NoClose'] = true;
 
-		if(!isset($properties['modalInitButton']) && $this->modalTrigger) {
+		if((!isset($properties['Trigger']) || isset($properties['TriggerButton'])) && $this->modalTrigger) {
 			if($this->modalTrigger instanceof FormActionLink)
 				$this->modalTrigger->triggerModal($this->ID());
 
 			if($this->modalTrigger instanceof FormField)
-				$properties['modalInitButton'] = $this->modalTrigger;
+				$properties['TriggerButton'] = $this->modalTrigger;
 			else
-				$properties['modalInit'] = $this->modalTrigger;
+				$properties['Trigger'] = $this->modalTrigger;
 		}
 
-		if(!isset($properties['modalFields']) && $this->children)
-			$properties['modalFields'] = $this->children;
+		if(!isset($properties['FieldList']) && $this->children)
+			$properties['FieldList'] = $this->children;
 
-		if(!isset($properties['modalFooterFields']) && $this->footer)
-			$properties['modalFooterFields'] = $this->footer;
+		if(!isset($properties['FooterFields']) && $this->footer)
+			$properties['FooterFields'] = $this->footer;
 
-		return parent::Field($properties);
+		return parent::FieldHolder($properties);
+	}
+
+	public function FieldHolder($properties = []) {
+		return $this->Field($properties);
 	}
 } 
