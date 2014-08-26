@@ -82,7 +82,7 @@ class HasOneCompositeField extends CompositeField {
             $fields = $record->getCMSFields();
 
         if($fields)
-            return FieldList::create($fields->dataFields());
+            return $fields;
 
         return FieldList::create();
     }
@@ -255,6 +255,7 @@ class HasOneCompositeField extends CompositeField {
 				$this->unprependName($fields);
 
 				$form = new Form(singleton('Controller'), $this->name . '-form', $fields, new FieldList());
+
 				$form->loadDataFrom($value);
 				$fields->setForm($this->form);
 				unset($form);
@@ -289,7 +290,7 @@ class HasOneCompositeField extends CompositeField {
 			if($field->UnPrependedName) continue;
 
 			if($field->isComposite())
-				$this->prependName($field->FieldList());
+				$this->unprependName($field->FieldList());
 
 			if(strpos($field->Name, $this->name . '[') === 0)
 				$field->setName(trim(str_replace($this->name . '[', '',  $field->Name), ']'));
