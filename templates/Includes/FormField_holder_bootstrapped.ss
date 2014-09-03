@@ -1,7 +1,7 @@
 <div id="$ID-Holder" $HolderAttributesHTML>
     <label id="$ID-Label" for="$ID" $LabelAttributesHTML>
-        <% if $Label %>$Label<% else %>$Title<% end_if %>
-        <% if $Label || $Title %>
+        $Title
+        <% if $Title %>
             <% if $Form && $Form.AppendToRequiredLabels && $isRequired %> $Form.AppendToRequiredLabels<% end_if %>
         <% end_if %>
     </label>
