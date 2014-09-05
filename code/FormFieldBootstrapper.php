@@ -39,7 +39,7 @@ class FormFieldBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormFiel
 
 			if (!$this->getAttribute('data-loading-text'))
 				$this->setAttribute('data-loading-text', _t('LOADING...', 'Loading...'));
-		} elseif (!($field instanceof LiteralField) && !($field instanceof HeaderField) && !($field instanceof CompositeField)) {
+		} elseif (!($field instanceof LiteralField) && !($field instanceof HeaderField) && !($field instanceof CompositeField) && !($field instanceof OptionsetField)) {
 			$this->addExtraClass('form-control');
 		}
 	}
