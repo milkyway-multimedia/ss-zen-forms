@@ -55,6 +55,12 @@ class HasOneCompositeField extends CompositeField {
 		parent::__construct($fields);
 	}
 
+    public function setForm($form) {
+        parent::setForm($form);
+        $this->attachFieldsFromFormRecord();
+        return $this;
+    }
+
 	public function setRecord($record) {
 		$this->record = $record;
 		return $this;
@@ -63,6 +69,15 @@ class HasOneCompositeField extends CompositeField {
 	public function getRecord() {
 		return $this->record;
 	}
+
+    protected function attachFieldsFromFormRecord() {
+        if(!$this->record && $this->Form) {
+            $this->record = $this->recordFromForm();
+
+            if($this->record && !$this->children)
+                $this->children = $this->fieldsFromRecord($this->record);
+        }
+    }
 
     protected function recordFromForm() {
         if($this->Form && $this->Form->Record) {
@@ -77,7 +92,7 @@ class HasOneCompositeField extends CompositeField {
 
     protected function fieldsFromRecord($record) {
         if($record->hasMethod('getHasOneCMSFields'))
-            $fields = $record->getHasOneCMSFields();
+            $fields = $record->getHasOneCMSFields($this->Form ? $this->Form->Record : null);
         else
             $fields = $record->getCMSFields();
 
@@ -231,7 +246,7 @@ class HasOneCompositeField extends CompositeField {
 	public function FieldList($prependName = true) {
 		$fields = parent::FieldList();
 
-        if((!$fields || !$fields->exists()) && $record = $this->recordFromForm())
+        if((!$fields || !$fields->exists()) && (($record = $this->record) || ($record = $this->recordFromForm())))
             $this->children = $fields = $this->fieldsFromRecord($record);
 
 		if($fields && $fields->exists()) {
