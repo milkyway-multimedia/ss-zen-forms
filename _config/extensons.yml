@@ -6,6 +6,8 @@ ConfirmedPasswordField:
   extensions:
     - \Milkyway\SS\ZenForms\Extensions\ConfirmedPasswordField
 FormField:
+  allowed_actions:
+    - verify
   extensions:
     - \Milkyway\SS\ZenForms\Extensions\FormField
 Form:
