@@ -13,6 +13,12 @@ if (class_exists('KeyValueField')) {
 	{
 		public $separator = ' ';
 
+        public $keyFieldClass = 'TextField';
+        public $valFieldClass = 'TextField';
+
+        public $keyFieldClassForLists = 'Dropdown';
+        public $valFieldClassForLists = 'Dropdown';
+
 		public function getAttributes()
 		{
 			$this->addExtraClass('multivaluefieldlist mvkeyvallist');
@@ -60,16 +66,16 @@ if (class_exists('KeyValueField')) {
 
 		public function KeyField() {
 			if($this->sourceKeys && count($this->sourceKeys))
-				return \DropdownField::create($this->name . '[key][]', '', $this->sourceKeys)->addExtraClass('mventryfield mvdropdown');
+				return \Object::create($this->keyFieldClassForLists, '[key][]', '', $this->sourceKeys)->addExtraClass('mventryfield mvdropdown');
 			else
-				return \TextField::create($this->name . '[key][]')->addExtraClass('mventryfield mvtextfield');
+				return \Object::create($this->keyFieldClass, $this->name . '[key][]')->addExtraClass('mventryfield mvtextfield');
 		}
 
 		public function ValField() {
 			if($this->sourceValues && count($this->sourceValues))
-				return \DropdownField::create($this->name . '[val][]', '', $this->sourceValues)->addExtraClass('mventryfield mvdropdown');
+				return \Object::create($this->valFieldClassForLists, $this->name . '[val][]', '', $this->sourceValues)->addExtraClass('mventryfield mvdropdown');
 			else
-				return \TextField::create($this->name . '[val][]')->addExtraClass('mventryfield mvtextfield');
+				return \Object::create($this->valFieldClass, $this->name . '[val][]')->addExtraClass('mventryfield mvtextfield');
 		}
 
 		public function Type() {
