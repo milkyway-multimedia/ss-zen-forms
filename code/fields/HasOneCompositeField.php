@@ -94,7 +94,7 @@ class HasOneCompositeField extends CompositeField {
         if($record->hasMethod('getHasOneCMSFields'))
             $fields = $record->getHasOneCMSFields($this->Form ? $this->Form->Record : null);
         else
-            $fields = $record->getCMSFields();
+            $fields = $record->getFrontEndFields();
 
         if($fields)
             return $fields;
