@@ -22,6 +22,9 @@ class FormFieldBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormFiel
 		'control-label',
 	];
 
+	protected $optionAttributes = [];
+	protected $optionClasses = [];
+
 	public function __construct($original)
 	{
 		parent::__construct($original);
@@ -41,6 +44,10 @@ class FormFieldBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormFiel
 				$this->setAttribute('data-loading-text', _t('LOADING...', 'Loading...'));
 		} elseif (!($field instanceof LiteralField) && !($field instanceof HeaderField) && !($field instanceof CompositeField) && !($field instanceof OptionsetField)) {
 			$this->addExtraClass('form-control');
+		}
+
+		if($field instanceof \CheckboxSetField) {
+			$field->addExtraClass('checkbox');
 		}
 	}
 
@@ -101,7 +108,7 @@ class FormFieldBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormFiel
 	{
 		$this->labelAttributes[$attribute] = $value;
 
-		return $this->owner;
+		return $this;
 	}
 
 	public function removeLabelAttribute($attribute)
@@ -109,11 +116,11 @@ class FormFieldBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormFiel
 		if(isset($this->labelAttributes[$attribute]))
 			unset($this->labelAttributes[$attribute]);
 
-		return $this->owner;
+		return $this;
 	}
 
 	public function addLabelClass($class) {
-		$this->labelClasses = array_merge($this->holderClasses, is_array($class) ? $class : explode(' ', $class));
+		$this->labelClasses = array_merge($this->labelClasses, is_array($class) ? $class : explode(' ', $class));
 		return $this;
 	}
 
@@ -132,6 +139,46 @@ class FormFieldBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormFiel
 		$attributes['class'] = isset($attributes['class']) ? $attributes['class'] . implode(' ', $this->labelClasses) : implode(' ', $this->labelClasses);
 
 		return FormBootstrapper::get_attributes_for_tag($attributes, ['id', 'for']);
+	}
+
+	public function setOptionAttribute($attribute, $value)
+	{
+		$this->optionAttributes[$attribute] = $value;
+
+		return $this;
+	}
+
+	public function removeOptionAttribute($attribute)
+	{
+		if(isset($this->optionAttributes[$attribute]))
+			unset($this->optionAttributes[$attribute]);
+
+		return $this;
+	}
+
+	public function addOptionClass($class) {
+		$this->optionClasses = array_merge($this->optionClasses, is_array($class) ? $class : explode(' ', $class));
+		return $this;
+	}
+
+	public function removeOptionClass($class) {
+		if(!is_array($class))
+			$class = [$class];
+
+		$this->optionClasses = array_diff($this->optionClasses, $class);
+
+		return $this;
+	}
+
+	public function OptionAttributesHTML()
+	{
+		$attributes = $this->optionAttributes;
+		$attributes['class'] = isset($attributes['class']) ? $attributes['class'] . implode(' ', $this->optionClasses) : implode(' ', $this->optionClasses);
+
+		if($this->original()->getAttribute('required'))
+			$attributes['required'] = $this->up()->getAttribute('required');
+
+		return FormBootstrapper::get_attributes_for_tag($attributes, ['disabled', 'checked', 'selected', 'value', 'type', 'name', 'id']);
 	}
 
 	protected function suffixTemplates(array $templates)
