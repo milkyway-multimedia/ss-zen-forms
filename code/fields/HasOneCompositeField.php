@@ -287,7 +287,7 @@ class HasOneCompositeField extends CompositeField {
 
 	protected function prependName(FieldList $fields) {
 		foreach($fields as $field){
-			if($field->PrependedName) continue;
+			if(!$field || $field->PrependedName) continue;
 
 			if($field->isComposite())
 				$this->prependName($field->FieldList());
@@ -302,7 +302,7 @@ class HasOneCompositeField extends CompositeField {
 
 	protected function unprependName(FieldList $fields) {
 		foreach($fields as $field){
-			if($field->UnPrependedName) continue;
+			if(!$field || $field->UnPrependedName) continue;
 
 			if($field->isComposite())
 				$this->unprependName($field->FieldList());
