@@ -198,6 +198,8 @@ class HasOneCompositeField extends CompositeField {
 			$form->saveInto($record);
 			unset($form);
 
+			$record->flushCache(false);
+
 			// Save extra data into field
 			if(count($this->extraData))
 				$record->castedUpdate($this->extraData);
