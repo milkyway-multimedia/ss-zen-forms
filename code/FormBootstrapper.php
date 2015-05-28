@@ -79,6 +79,11 @@ class FormBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormDecorator
         return $this;
     }
 
+    public function addExtraClass($classes) {
+        $this->up()->addExtraClass($classes);
+        return $this;
+    }
+
     public function __construct($original) {
         parent::__construct($original);
 

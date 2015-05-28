@@ -92,7 +92,7 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
      * @return HTML
      */
     public function forAjaxTemplate() {
-        $view = new SSViewer(array(
+        $view = new \SSViewer(array(
             $this->getTemplate(),
             'Form'
         ));
