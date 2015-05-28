@@ -13,7 +13,28 @@ abstract class BaseDecorator extends \ViewableData implements Decorator {
     protected $pullUp;
 
     public static function decorate() {
-        return call_user_func_array(array(get_called_class(), 'create'), func_get_args());
+        return call_user_func_array([get_called_class(), 'create'], func_get_args());
+    }
+
+    public static function create() {
+        $args = func_get_args();
+
+        if(!isset($args[0]) || !($args[0] instanceof Decorator))
+            return call_user_func_array(['Object', 'create'], array_merge([get_called_class()], $args));
+
+        $item = $args[0];
+        $alreadyHasDecorator = false;
+
+        while($item instanceof Decorator) {
+            if(get_class($item) === __CLASS__) {
+                $alreadyHasDecorator = true;
+                break;
+            }
+
+            $item = $item->up();
+        }
+
+        return $alreadyHasDecorator ? $args[0] : call_user_func_array(['Object', 'create'], array_merge([get_called_class()], $args));
     }
 
     public function __construct($original) {
