@@ -1,20 +1,27 @@
 {
-    "name"       : "milkyway-multimedia/ss-zen-forms",
-    "description": "Allow you to decorate Silverstripe Forms before displaying, adding extra functionality",
-    "type"       : "silverstripe-module",
-    "keywords"   : ["forms bootstrap mwm"],
-    "license"    : "MIT",
-    "authors"    : [
+    "name"        : "milkyway-multimedia/ss-zen-forms",
+    "description" : "Allow you to decorate Silverstripe Forms before displaying, adding extra functionality",
+    "type"        : "silverstripe-module",
+    "keywords"    : [
+        "forms",
+        "bootstrap",
+        "mwm"
+    ],
+    "license"     : "MIT",
+    "authors"     : [
         {
-            "name" : "Mellisa Hankins",
-            "email": "mell@milkywaymultimedia.com.au"
+            "name"  : "Mellisa Hankins",
+            "email" : "mell@milkywaymultimedia.com.au"
         }
     ],
-    "require"    : {
-        "silverstripe/framework"              : "~3.1",
-        "sheadawson/silverstripe-zenvalidator": "dev-master"
+    "require"     : {
+        "silverstripe/framework"               : "~3.1",
+        "sheadawson/silverstripe-zenvalidator" : "dev-master"
     },
-    "extra"      : {
-        "installer-name": "mwm-zen-forms"
+    "suggest"      : {
+        "milkyway-multimedia/ss-mwm-formfields" : "Some extra form fields that you may handy and complement this module"
+    },
+    "extra"       : {
+        "installer-name" : "mwm-zen-forms"
     }
 }

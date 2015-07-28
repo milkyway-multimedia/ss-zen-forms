@@ -1,27 +1,40 @@
-<?php /**
+<?php
+
+/**
  * Milkyway Multimedia
  * FormBootstrapper.php
  *
- * @package milkyway-multimedia/mwm-zen-forms
+ * @package milkyway-multimedia/ss-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-class FormBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormDecorator {
+
+use \Milkyway\SS\ZenForms\Model\AbstractFormDecorator;
+use \Milkyway\SS\ZenForms\Contracts\Decorator;
+
+class FormBootstrapper extends AbstractFormDecorator {
+    protected static $disallowed_template_classes = [
+        'Object',
+        'ViewableData',
+        'RequestHandler',
+    ];
+
     public $template = 'Form_bootstrapped';
 
-    public static function reset_template_for(\Milkyway\SS\ZenForms\Contracts\Decorator $item, $templateName) {
+    public static function reset_template_for(Decorator $item, $templateName) {
         $originalTemplates = $item->up()->getTemplate();
+        $originalItemClass = get_class($item->original());
 
         if(is_array($originalTemplates)) {
             $template = array_pop($originalTemplates);
         }
         else {
             $template = $originalTemplates;
-            $originalTemplates = null;
+            $originalTemplates = [];
         }
 
-        $templates = array();
+        $templates = [];
 
-        if($template && !in_array($template, array(get_class($item->original()), 'Form')))
+        if($template && !in_array($template, [$originalItemClass, 'Form']))
             $templates[] = $template;
 
         if(is_string($templateName))
@@ -29,16 +42,16 @@ class FormBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormDecorator
         else
             $templates = array_merge($templates, $templateName);
 
-        if($originalTemplates && count($originalTemplates)) {
-            $templates = array_merge($templates, $originalTemplates);
+        $templates = array_merge($templates, $originalTemplates);
+
+        $parentClass = $originalItemClass;
+
+        while($parentClass && !in_array($parentClass, static::$disallowed_template_classes)) {
+            $templates[] = $parentClass;
+            $parentClass = get_parent_class($parentClass);
         }
 
-        $templates[] = $item->class;
-        $templates[] = 'Form';
-
-        $templates = array_filter(array_unique($templates));
-
-        return $templates;
+        return array_filter(array_unique($templates));
     }
 
     public static function get_attributes_from_tag($tag) {
@@ -70,17 +83,18 @@ class FormBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormDecorator
         return implode(' ', $parts);
     }
 
+    public static function requirements() {
+        Requirements::javascript(THIRDPARTY_DIR . '/jquery/jquery.js');
+        Requirements::javascript(SS_MWM_ZEN_FORMS_DIR . '/js/mwm.zen-forms.js');
+    }
+
     public function getTemplate() {
-        return FormBootstrapper::reset_template_for($this, $this->template);
+        return static::reset_template_for($this, $this->template);
     }
 
     public function ajaxify() {
-        $this->addExtraClass('ajax-submit');
-        return $this;
-    }
-
-    public function addExtraClass($classes) {
-        $this->up()->addExtraClass($classes);
+        static::requirements();
+        $this->up()->addExtraClass('ajax-submit');
         return $this;
     }
 

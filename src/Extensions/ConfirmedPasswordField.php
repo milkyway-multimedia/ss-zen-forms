@@ -1,6 +1,10 @@
 <?php namespace Milkyway\SS\ZenForms\Extensions;
 
-class ConfirmedPasswordField extends \Extension {
+use Extension;
+use Member;
+use HiddenField;
+
+class ConfirmedPasswordField extends Extension {
 
     protected $usePasswordGenerator = false;
     protected $measurePasswordStrength = true;
@@ -82,23 +86,7 @@ class ConfirmedPasswordField extends \Extension {
     public function getPasswordField()
     {
         $field = $this->owner->children->fieldByName($this->owner->getName() . '[_Password]');
-
-        if ($this->measurePasswordStrength)
-        {
-            if (! $this->measurePasswordValidator && $this->owner->Form && $this->owner->Form->Record && ($this->owner->Form->Record instanceof Member))
-                $this->measurePasswordValidator = \Member::password_validator();
-
-            if ($this->measurePasswordValidator)
-            {
-                $validatorSettings = $this->measurePasswordValidator->getSettingsForJS();
-
-                $settings = array(
-                    'strengthScaleFactor' => .4
-                );
-            }
-
-            $field->addExtraClass('password-measure');
-        }
+        $field->addExtraClass('form-control_password password-measure');
 
         return $field;
     }
@@ -106,6 +94,7 @@ class ConfirmedPasswordField extends \Extension {
     public function getConfirmPasswordField()
     {
         $field = $this->owner->children->fieldByName($this->owner->Name . '[_ConfirmPassword]');
+        $field->addExtraClass('form-control_confirm-password');
         return $field;
     }
 }

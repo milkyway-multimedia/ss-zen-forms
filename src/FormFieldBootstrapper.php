@@ -4,10 +4,13 @@
  * Milkyway Multimedia
  * FormFieldBootstrapper.php
  *
- * @package milkyway-multimedia/mwm-zen-forms
+ * @package milkyway-multimedia/ss-zen-forms
  * @author  Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-class FormFieldBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormFieldDecorator
+
+use Milkyway\SS\ZenForms\Model\AbstractFormFieldDecorator;
+
+class FormFieldBootstrapper extends AbstractFormFieldDecorator
 {
 	public $templateSuffix = '_bootstrapped';
 
@@ -31,22 +34,35 @@ class FormFieldBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormFiel
 		$this->addExtraClassesAndAttributes();
 	}
 
+	public function hideIf($field, $state = 'blank') {
+		$att = $this->getHolderAttribute('data-hide-if');
+		$this->setHolderAttribute('data-hide-if', trim($att . ',' . $this->getTargetFieldCondition($field, $state), ', '));
+
+		return $this;
+	}
+
+	public function showIf($field, $state = 'blank') {
+		$att = $this->getHolderAttribute('data-show-if');
+		$this->setHolderAttribute('data-show-if', trim($att . ',' . $this->getTargetFieldCondition($field, $state), ', '));
+
+		return $this;
+	}
+
 	public function addExtraClassesAndAttributes()
 	{
 		$field = $this->original();
 
-		if ($field instanceof FormAction
-			|| $field instanceof FormActionLink
-		) {
+		if ($this->isButton($field)) {
 			$this->addExtraClass('btn');
 
 			if (!$this->getAttribute('data-loading-text'))
 				$this->setAttribute('data-loading-text', _t('LOADING...', 'Loading...'));
-		} elseif (!($field instanceof LiteralField) && !($field instanceof HeaderField) && !($field instanceof CompositeField) && !($field instanceof OptionsetField)) {
+		}
+        elseif (!$this->isNonFormControl($field)) {
 			$this->addExtraClass('form-control');
 		}
 
-		if($field instanceof \CheckboxSetField) {
+		if($this->isCheckbox($field)) {
 			$field->addExtraClass('checkbox');
 		}
 	}
@@ -73,6 +89,12 @@ class FormFieldBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormFiel
 		return $this;
 	}
 
+	public function getHolderAttribute($attribute)
+	{
+		$attributes = $this->getHolderAttributes();
+		return isset($attributes[$attribute]) ? $attributes[$attribute] : null;
+	}
+
 	public function removeHolderAttribute($attribute)
 	{
 		if(isset($this->holderAttributes[$attribute]))
@@ -95,13 +117,16 @@ class FormFieldBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormFiel
 		return $this;
 	}
 
-	public function HolderAttributesHTML()
-	{
+	public function getHolderAttributes() {
 		$attributes = $this->holderAttributes;
 		$attributes['class'] = isset($attributes['class']) ? $attributes['class'] . implode(' ', $this->holderClasses) : implode(' ', $this->holderClasses);
 		$attributes['class'] = $attributes['class'] . ' ' . $this->original()->Type() . '-holder';
+		return $attributes;
+	}
 
-		return FormBootstrapper::get_attributes_for_tag($attributes, ['id']);
+	public function HolderAttributesHTML()
+	{
+		return FormBootstrapper::get_attributes_for_tag($this->getHolderAttributes(), ['id']);
 	}
 
 	public function setLabelAttribute($attribute, $value)
@@ -201,4 +226,36 @@ class FormFieldBootstrapper extends \Milkyway\SS\ZenForms\Model\AbstractFormFiel
 	{
 		return is_object($this->forTemplate()) ? $this->forTemplate()->Value : $this->FieldHolder();
 	}
+
+	protected function getTargetFieldCondition($field, $state) {
+        FormBootstrapper::requirements();
+
+		if($field instanceof FormField) {
+			$prefix = strpos($state, '[') === 0 ? '' : ':';
+
+			if($field->Form)
+				$condition = '#' . $field->ID() . $prefix . $state;
+			else
+				$condition = "[name='" . $field->ID() . "']" . $prefix . $state;
+		}
+		else
+			$condition = $field . ':' . $state;
+
+		return $condition;
+	}
+
+    public function isButton($field = null) {
+        if(!$field) $field = $this->original();
+        return $field instanceof FormAction || $field instanceof FormActionLink || $field instanceof FormActionNoValidation;
+    }
+
+    public function isNonFormControl($field = null) {
+        if(!$field) $field = $this->original();
+        return $field instanceof LiteralField || $field instanceof HeaderField || $field instanceof CompositeField || $field instanceof OptionsetField;
+    }
+
+    public function isCheckbox($field = null) {
+        if(!$field) $field = $this->original();
+        return $field instanceof CheckboxSetField;
+    }
 } 

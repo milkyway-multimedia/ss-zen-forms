@@ -3,7 +3,7 @@
  * Milkyway Multimedia
  * AbstractFormFieldDecorator.php
  *
- * @package milkyway-multimedia/mwm-zen-forms
+ * @package milkyway-multimedia/ss-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
 abstract class AbstractFormFieldDecorator extends BaseDecorator {

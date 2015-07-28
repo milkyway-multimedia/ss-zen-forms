@@ -1,6 +1,14 @@
 <?php namespace Milkyway\SS\ZenForms\Model;
 
+require_once dirname(dirname(__FILE__)) . '/Traits/Decorator.php';
+
 use Milkyway\SS\ZenForms\Contracts\Decorator;
+use \Milkyway\SS\ZenForms\Traits\Decorator as CommonMethods;
+
+use SSViewer;
+use RequestHandler;
+use SS_HTTPRequest;
+use DataModel;
 
 /**
  * Milkyway Multimedia
@@ -8,28 +16,16 @@ use Milkyway\SS\ZenForms\Contracts\Decorator;
  *
  * @todo One of these days some of this will used as a trait
  *
- * @package milkyway-multimedia/mwm-zen-forms
+ * @package milkyway-multimedia/ss-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-abstract class AbstractFormDecorator extends \RequestHandler implements Decorator {
+abstract class AbstractFormDecorator extends RequestHandler implements Decorator {
+    use CommonMethods;
 
-    protected $pullUp;
-
-    public static function decorate() {
-        return call_user_func_array(array(get_called_class(), 'create'), func_get_args());
-    }
-
-    public function original() {
-        $original = $this->pullUp;
-
-        if($original instanceof Decorator)
-            $original = $original->original();
-
-        return $original;
-    }
-
-    public function up() {
-        return $this->pullUp;
+    public function __construct($original) {
+        $this->pullUp = $original;
+        $this->failover = $original;
+        parent::__construct();
     }
 
     /**
@@ -41,22 +37,8 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
      *
      * @return array|\RequestHandler|\SS_HTTPResponse|string
      */
-    public function handleRequest(\SS_HTTPRequest $request, \DataModel $model) {
+    public function handleRequest(SS_HTTPRequest $request, DataModel $model) {
         return $this->original()->handleRequest($request, $model);
-    }
-
-    public function __construct($original) {
-        $this->pullUp = $original;
-        $this->failover = $original;
-    }
-
-    public function onlySetIfNotSet($field, $value) {
-        $original = $this->original();
-
-        if(!isset($original->$field))
-            $original->$field = $value;
-
-        return $this;
     }
 
     /**
@@ -69,7 +51,7 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
      * This is returned when you access a form as $FormObject rather
      * than <% with FormObject %>
      *
-     * @return HTML
+     * @return string
      */
     public function forTemplate() {
         $return = $this->renderWith(array_merge(
@@ -89,10 +71,10 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
      * It triggers slightly different behaviour, such as disabling the rewriting
      * of # links.
      *
-     * @return HTML
+     * @return string
      */
     public function forAjaxTemplate() {
-        $view = new \SSViewer(array(
+        $view = new SSViewer(array(
             $this->getTemplate(),
             'Form'
         ));
@@ -112,7 +94,7 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
      * and _form_enctype.  These are the attributes of the form.  These fields
      * can be used to send the form to Ajax.
      *
-     * @return HTML
+     * @return string
      */
     public function formHtmlContent() {
         $this->IncludeFormTag = false;
@@ -136,7 +118,7 @@ abstract class AbstractFormDecorator extends \RequestHandler implements Decorato
      *
      * @param SSViewer|string $template
      *
-     * @return HTML
+     * @return string
      */
     public function renderWithoutActionButton($template) {
         $custom = $this->customise(array(

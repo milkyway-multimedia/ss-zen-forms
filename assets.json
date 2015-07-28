@@ -1,0 +1,18 @@
+{
+    "js":  [
+        {
+            "src": [
+                "bower_components/assets/javascript/selector-filters.js",
+                "bower_components/assets/javascript/forms.js",
+                "bower_components/assets/javascript/conditionals.js"
+            ],
+            "dest":   "js/mwm.zen-forms.js"
+        },
+        {
+            "src": [
+                "bower_components/assets/javascript/parsley-js/**/*"
+            ],
+            "dest":   "js/mwm.zen-forms.top.js"
+        }
+    ]
+}

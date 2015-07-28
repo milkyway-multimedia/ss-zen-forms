@@ -1,15 +1,16 @@
-<?php namespace Milkyway\SS\ZenForms\Model;
-
-use Milkyway\SS\ZenForms\Contracts\Decorator;
+<?php namespace Milkyway\SS\ZenForms\Traits;
 
 /**
  * Milkyway Multimedia
- * BaseDecorator.php
+ * Decorator.php
  *
- * @package milkyway-multimedia/mwm-zen-forms
+ * @package milkywaymultimedia.com.au
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-abstract class BaseDecorator extends \ViewableData implements Decorator {
+
+use Milkyway\SS\ZenForms\Contracts\Decorator as Contract;
+
+trait Decorator {
     protected $pullUp;
 
     public static function decorate() {
@@ -19,13 +20,13 @@ abstract class BaseDecorator extends \ViewableData implements Decorator {
     public static function create() {
         $args = func_get_args();
 
-        if(!isset($args[0]) || !($args[0] instanceof Decorator))
+        if(!isset($args[0]) || !($args[0] instanceof Contract))
             return call_user_func_array(['Object', 'create'], array_merge([get_called_class()], $args));
 
         $item = $args[0];
         $alreadyHasDecorator = false;
 
-        while($item instanceof Decorator) {
+        while($item instanceof Contract) {
             if(get_class($item) === __CLASS__) {
                 $alreadyHasDecorator = true;
                 break;
@@ -37,15 +38,10 @@ abstract class BaseDecorator extends \ViewableData implements Decorator {
         return $alreadyHasDecorator ? $args[0] : call_user_func_array(['Object', 'create'], array_merge([get_called_class()], $args));
     }
 
-    public function __construct($original) {
-        $this->pullUp = $original;
-        $this->failover = $original;
-    }
-
     public function original() {
         $original = $this->pullUp;
 
-        if($original instanceof Decorator)
+        if($original instanceof Contract)
             $original = $original->original();
 
         return $original;
@@ -64,8 +60,8 @@ abstract class BaseDecorator extends \ViewableData implements Decorator {
         return $this;
     }
 
-	public function debug() {
-		$more = $this->up()->hasMethod('debug') ? $this->up()->debug() : 'none';
-		return 'Wrapped with ' . get_class($this) . ' - ' . $more;
-	}
-} 
+    public function debug() {
+        $more = $this->up()->hasMethod('debug') ? $this->up()->debug() : 'none';
+        return 'Wrapped with ' . get_class($this) . ' - ' . $more;
+    }
+}

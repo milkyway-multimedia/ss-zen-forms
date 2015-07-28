@@ -3,10 +3,14 @@
  * Milkyway Multimedia
  * ValidPassword.php
  *
- * @package milkyway-multimedia/mwm-zen-forms
+ * @package milkyway-multimedia/ss-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-class ValidPassword extends \ZenValidatorConstraint {
+
+use ZenValidatorConstraint;
+use Requirements;
+
+class ValidPassword extends ZenValidatorConstraint {
     /** @var \PasswordValidator  */
     protected $validator = null;
 
@@ -26,6 +30,10 @@ class ValidPassword extends \ZenValidatorConstraint {
     public function applyParsley(){
         parent::applyParsley();
 
+        Requirements::insertHeadTags(sprintf('<script src="%s"></script>', SS_MWM_ZEN_FORMS_DIR . '/js/mwm.zen-forms.top.js'), SS_MWM_ZEN_FORMS_DIR . '/js/mwm.zen-forms.top.js');
+
+        $this->field->addExtraClass('form-control_with-password-measure');
+
         $this->field->setAttribute('data-parsley-validpassword', json_encode(array_merge($this->validator->SettingsForJS, ['strengthScaleFactor' => $this->strengthScaleFactor])));
 
         $trigger = $this->field->getAttribute('data-parsley-trigger');
@@ -38,6 +46,8 @@ class ValidPassword extends \ZenValidatorConstraint {
 
     public function removeParsley(){
         parent::removeParsley();
+
+        $this->field->removeExtraClass('form-control_with-password-measure');
 
         $this->field->setAttribute('data-parsley-validpassword', '');
         $this->field->setAttribute('data-parsley-validpassword-message', '');

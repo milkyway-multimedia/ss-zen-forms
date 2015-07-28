@@ -3,10 +3,13 @@
  * Milkyway Multimedia
  * PasswordValidator.php
  *
- * @package milkyway-multimedia/mwm-zen-forms
+ * @package milkyway-multimedia/ss-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-class PasswordValidator extends \PasswordValidator {
+
+use PasswordValidator as Original;
+
+class PasswordValidator extends Original {
     public function getSettingsForJS() {
         return array(
             'minimumChars' => $this->minLength,

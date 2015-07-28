@@ -1,11 +1,17 @@
-<?php /**
+<?php
+
+/**
  * Milkyway Multimedia
  * FieldListDecorator.php
  *
- * @package milkyway-multimedia/mwm-zen-forms
+ * @package milkyway-multimedia/ss-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-class FieldListBootstrapper extends \Milkyway\SS\ZenForms\Model\BaseDecorator {
+
+use \Milkyway\SS\ZenForms\Model\BaseDecorator;
+use \Milkyway\SS\ZenForms\Contracts\Decorator;
+
+class FieldListBootstrapper extends BaseDecorator {
     public function __construct($original) {
         parent::__construct($original);
         $this->apply();
@@ -20,16 +26,16 @@ class FieldListBootstrapper extends \Milkyway\SS\ZenForms\Model\BaseDecorator {
 
     public function applyToFields($fields) {
         foreach($fields as $field) {
-            if($field instanceof LiteralField || $field instanceof HeaderField)
+            if(!$this->canBootstrap($field))
                 continue;
             elseif($field->isComposite() && $field->hasMethod('FieldList'))
                 $this->applyToFields($field->FieldList());
 			elseif(isset($field->children) && $field->children instanceof $fields)
                 $this->applyToFields($field->children);
 
-            if((!$field->hasData() || $field->isComposite()) && !($field instanceof \FormFieldBootstrapper))
+            if((!$field->hasData() || $field->isComposite()) && !($field instanceof FormFieldBootstrapper))
                 $fields->replace($field, FormFieldBootstrapper::create($field));
-            elseif(!($field instanceof \FormFieldBootstrapper))
+            elseif(!($field instanceof FormFieldBootstrapper))
                 $this->replaceField($field->Name, FormFieldBootstrapper::create($field));
         }
     }
@@ -47,8 +53,12 @@ class FieldListBootstrapper extends \Milkyway\SS\ZenForms\Model\BaseDecorator {
             elseif($field->children && $field->children instanceof $fields)
                 $this->removeFromFields($field);
 
-            if($field instanceof \Milkyway\SS\ZenForms\Contracts\Decorator)
+            if($field instanceof Decorator)
                 $this->replaceField($field->Name, $field->original());
         }
+    }
+
+    protected function canBootstrap($field) {
+        return !($field instanceof LiteralField || $field instanceof HeaderField);
     }
 } 
