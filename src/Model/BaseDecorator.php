@@ -3,7 +3,7 @@
 require_once dirname(dirname(__FILE__)) . '/Traits/Decorator.php';
 
 use Milkyway\SS\ZenForms\Contracts\Decorator;
-use \Milkyway\SS\ZenForms\Traits\Decorator as CommonMethods;
+use Milkyway\SS\ZenForms\Traits\Decorator as CommonMethods;
 
 use ViewableData;
 
@@ -21,5 +21,20 @@ abstract class BaseDecorator extends ViewableData implements Decorator {
         $this->pullUp = $original;
         $this->failover = $original;
         parent::__construct($original);
+    }
+
+    public function obj($fieldName, $arguments = null, $forceReturnedObject = true, $cache = false, $cacheName = null) {
+        $value = parent::obj($fieldName, $arguments, $forceReturnedObject, $cache, $cacheName);
+
+        if(!$value || !(is_object($value) && ($value instanceof ViewableData) && $value->exists())) {
+            return $this->pullUp->obj($fieldName, $arguments, $forceReturnedObject, $cache, $cacheName);
+        }
+        else {
+            return $value;
+        }
+    }
+
+    public function __call($method, $arguments) {
+        return call_user_func_array(array($this->pullUp, $method), $arguments);
     }
 } 
