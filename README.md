@@ -14,14 +14,14 @@ An example of this within the Silverstripe Framework is the way the SS_ListDecor
 You could use this pattern in more than just a form. You could wrap DataObjects who only need temporary functionality that you can easily inject/change without changing the underlying model class.
 
 #### Why not just use extensions?
-Extensions are great, but sometimes not every Object will need that extension (for example, I wouldn't need a form withing the CMS to use Twitter Bootstrap templates and functionality).
+Extensions are great, but sometimes not every Object will need that extension (for example, I wouldn't need a form within the CMS to use Twitter Bootstrap templates and functionality).
 
 Decorators work on a **per instance** rather than on a **per class** basis, and sometimes that is what you really need.
 
 If you prefer the extensions version, unclecheese offers the **bootstrap-form extension by @unclecheese**.
 
-## Caveats
-Unfortunately, when you use a decorator you cannot chain methods and then return what is returned from the chained method, since it will be an instance of form. When you return the form from a method in your controller, it should be an instance of Decorator to have templates and methods properly overriden.
+#### Why does this use zen validator?
+The default Silverstripe validator does not support JS validation at this stage, so I use the zen validator by @sheadawson. I have included some constraints that work nicely with the FormFieldBootstrapper decorator.
 
 ## Install
 Add the following to your composer.json file
@@ -82,6 +82,10 @@ This module automatically pulls in the [Silverstripe ZenValidator](https://githu
 
 * [Milkyway\SS\ZenForms\Constraints\RequiredIf](docs/en/constraints/RequiredIf.md)
 * [Milkyway\SS\ZenForms\Constraints\ValidPassword](docs/en/constraints/ValidPassword.md)
+* [Milkyway\SS\ZenForms\Constraints\ValidPassword](docs/en/constraints/ConfirmPassword.md)
+
+## ConfirmedPasswordField
+When you wrap the ConfirmedPasswordField, it allows you to use the password measure helper and password generator. It only works properly when wrapped with the FormFieldBootstrapper though, and you must include jquery.complexify.js in your scripts for it to work (it is not included with the module).
 
 ## License 
 * MIT

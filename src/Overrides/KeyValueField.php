@@ -1,9 +1,5 @@
 <?php namespace Milkyway\SS\ZenForms\Overrides;
 
-if (!class_exists('KeyValueField')) {
-    return;
-}
-
 /**
  * Milkyway Multimedia
  * KeyValueField.php
@@ -61,16 +57,16 @@ class KeyValueField extends Original
             foreach ($this->value as $key => $val) {
                 $fields->push(ArrayData::create([
                     'CssClasses' => $classes,
-                    'KeyField' => $this->transformField($keyField->castedCopy(get_class($keyField))->setValue($key)),
-                    'ValField' => $this->transformField($valField->castedCopy(get_class($valField))->setValue($val)),
+                    'KeyField'   => $this->transformField($keyField->castedCopy(get_class($keyField))->setValue($key)),
+                    'ValField'   => $this->transformField($valField->castedCopy(get_class($valField))->setValue($val)),
                 ]));
             }
         }
 
         $fields->push(ArrayData::create([
             'CssClasses' => $classes,
-            'KeyField' => $this->transformField($keyField->castedCopy(get_class($keyField))),
-            'ValField' => $this->transformField($valField->castedCopy(get_class($valField))),
+            'KeyField'   => $this->transformField($keyField->castedCopy(get_class($keyField))),
+            'ValField'   => $this->transformField($valField->castedCopy(get_class($valField))),
         ]));
 
         return $fields;

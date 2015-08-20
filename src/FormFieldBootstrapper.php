@@ -12,250 +12,289 @@ use Milkyway\SS\ZenForms\Model\AbstractFormFieldDecorator;
 
 class FormFieldBootstrapper extends AbstractFormFieldDecorator
 {
-	public $templateSuffix = '_bootstrapped';
+    public $templateSuffix = '_bootstrapped';
 
-	protected $holderAttributes = [];
-	protected $holderClasses = [
-		'form-group',
-		'bootstrapped-field-holder',
-	];
+    protected $holderAttributes = [];
+    protected $holderClasses = [
+        'form-group',
+        'bootstrapped-field-holder',
+    ];
 
-	protected $labelAttributes = [];
-	protected $labelClasses = [
-		'control-label',
-	];
+    protected $labelAttributes = [];
+    protected $labelClasses = [
+        'control-label',
+    ];
 
-	protected $optionAttributes = [];
-	protected $optionClasses = [];
+    protected $optionAttributes = [];
+    protected $optionClasses = [];
 
-	public function __construct($original)
-	{
-		parent::__construct($original);
-		$this->addExtraClassesAndAttributes();
-	}
+    protected $customisations = [
+        'HolderAttributesHTML',
+        'LabelAttributesHTML',
+        'OptionAttributesHTML',
+    ];
 
-	public function hideIf($field, $state = 'blank') {
-		$att = $this->getHolderAttribute('data-hide-if');
-		$this->setHolderAttribute('data-hide-if', trim($att . ',' . $this->getTargetFieldCondition($field, $state), ', '));
+    public function __construct($original)
+    {
+        parent::__construct($original);
+        $this->addExtraClassesAndAttributes();
+    }
 
-		return $this;
-	}
+    public function hideIf($field, $state = 'blank')
+    {
+        $att = $this->getHolderAttribute('data-hide-if');
+        $this->setHolderAttribute('data-hide-if',
+            trim($att . ',' . $this->getTargetFieldCondition($field, $state), ', '));
 
-	public function showIf($field, $state = 'blank') {
-		$att = $this->getHolderAttribute('data-show-if');
-		$this->setHolderAttribute('data-show-if', trim($att . ',' . $this->getTargetFieldCondition($field, $state), ', '));
+        return $this;
+    }
 
-		return $this;
-	}
+    public function showIf($field, $state = 'blank')
+    {
+        $att = $this->getHolderAttribute('data-show-if');
+        $this->setHolderAttribute('data-show-if',
+            trim($att . ',' . $this->getTargetFieldCondition($field, $state), ', '));
 
-	public function addExtraClassesAndAttributes()
-	{
-		$field = $this->original();
+        return $this;
+    }
 
-		if ($this->isButton($field)) {
-			$this->addExtraClass('btn');
+    public function addExtraClassesAndAttributes()
+    {
+        $field = $this->original();
 
-			if (!$this->getAttribute('data-loading-text'))
-				$this->setAttribute('data-loading-text', _t('LOADING...', 'Loading...'));
-		}
-        elseif (!$this->isNonFormControl($field)) {
-			$this->addExtraClass('form-control');
-		}
+        if ($this->isButton($field)) {
+            $this->addExtraClass('btn');
 
-		if($this->isCheckbox($field)) {
-			$field->addExtraClass('checkbox');
-		}
-	}
+            if (!$this->getAttribute('data-loading-text')) {
+                $this->setAttribute('data-loading-text', _t('LOADING...', 'Loading...'));
+            }
+        } elseif (!$this->isNonFormControl($field)) {
+            $this->addExtraClass('form-control');
+        }
 
-	public function getFieldHolderTemplates()
-	{
-		return $this->suffixTemplates($this->up()->getFieldHolderTemplates());
-	}
+        if ($this->isCheckbox($field)) {
+            $field->addExtraClass('checkbox');
+        }
+    }
 
-	public function getSmallFieldHolderTemplates()
-	{
-		return $this->suffixTemplates($this->up()->getSmallFieldHolderTemplates());
-	}
+    public function getFieldHolderTemplates()
+    {
+        return $this->suffixTemplates($this->up()->getFieldHolderTemplates());
+    }
 
-	public function getTemplates()
-	{
-		return $this->suffixTemplates($this->up()->getTemplates());
-	}
+    public function getSmallFieldHolderTemplates()
+    {
+        return $this->suffixTemplates($this->up()->getSmallFieldHolderTemplates());
+    }
 
-	public function setHolderAttribute($attribute, $value)
-	{
-		$this->holderAttributes[$attribute] = $value;
+    public function getTemplates()
+    {
+        return $this->suffixTemplates($this->up()->getTemplates());
+    }
 
-		return $this;
-	}
+    public function setHolderAttribute($attribute, $value)
+    {
+        $this->holderAttributes[$attribute] = $value;
 
-	public function getHolderAttribute($attribute)
-	{
-		$attributes = $this->getHolderAttributes();
-		return isset($attributes[$attribute]) ? $attributes[$attribute] : null;
-	}
+        return $this;
+    }
 
-	public function removeHolderAttribute($attribute)
-	{
-		if(isset($this->holderAttributes[$attribute]))
-			unset($this->holderAttributes[$attribute]);
+    public function getHolderAttribute($attribute)
+    {
+        $attributes = $this->getHolderAttributes();
+        return isset($attributes[$attribute]) ? $attributes[$attribute] : null;
+    }
 
-		return $this;
-	}
+    public function removeHolderAttribute($attribute)
+    {
+        if (isset($this->holderAttributes[$attribute])) {
+            unset($this->holderAttributes[$attribute]);
+        }
 
-	public function addHolderClass($class) {
-		$this->holderClasses = array_merge($this->holderClasses, is_array($class) ? $class : explode(' ', $class));
-		return $this;
-	}
+        return $this;
+    }
 
-	public function removeHolderClass($class) {
-		if(!is_array($class))
-			$class = [$class];
+    public function addHolderClass($class)
+    {
+        $this->holderClasses = array_merge($this->holderClasses, is_array($class) ? $class : explode(' ', $class));
+        return $this;
+    }
 
-		$this->holderClasses = array_diff($this->holderClasses, $class);
+    public function removeHolderClass($class)
+    {
+        if (!is_array($class)) {
+            $class = [$class];
+        }
 
-		return $this;
-	}
+        $this->holderClasses = array_diff($this->holderClasses, $class);
 
-	public function getHolderAttributes() {
-		$attributes = $this->holderAttributes;
-		$attributes['class'] = isset($attributes['class']) ? $attributes['class'] . implode(' ', $this->holderClasses) : implode(' ', $this->holderClasses);
-		$attributes['class'] = $attributes['class'] . ' ' . $this->original()->Type() . '-holder';
-		return $attributes;
-	}
+        return $this;
+    }
 
-	public function HolderAttributesHTML()
-	{
-		return FormBootstrapper::get_attributes_for_tag($this->getHolderAttributes(), ['id']);
-	}
+    public function getHolderAttributes()
+    {
+        $attributes = $this->holderAttributes;
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . implode(' ',
+                $this->holderClasses) : implode(' ', $this->holderClasses);
+        $attributes['class'] = $attributes['class'] . ' ' . $this->original()->Type() . '-holder';
+        return $attributes;
+    }
 
-	public function setLabelAttribute($attribute, $value)
-	{
-		$this->labelAttributes[$attribute] = $value;
+    public function HolderAttributesHTML()
+    {
+        return FormBootstrapper::get_attributes_for_tag($this->getHolderAttributes(), ['id']);
+    }
 
-		return $this;
-	}
+    public function setLabelAttribute($attribute, $value)
+    {
+        $this->labelAttributes[$attribute] = $value;
 
-	public function removeLabelAttribute($attribute)
-	{
-		if(isset($this->labelAttributes[$attribute]))
-			unset($this->labelAttributes[$attribute]);
+        return $this;
+    }
 
-		return $this;
-	}
+    public function removeLabelAttribute($attribute)
+    {
+        if (isset($this->labelAttributes[$attribute])) {
+            unset($this->labelAttributes[$attribute]);
+        }
 
-	public function addLabelClass($class) {
-		$this->labelClasses = array_merge($this->labelClasses, is_array($class) ? $class : explode(' ', $class));
-		return $this;
-	}
+        return $this;
+    }
 
-	public function removeLabelClass($class) {
-		if(!is_array($class))
-			$class = [$class];
+    public function addLabelClass($class)
+    {
+        $this->labelClasses = array_merge($this->labelClasses, is_array($class) ? $class : explode(' ', $class));
+        return $this;
+    }
 
-		$this->labelClasses = array_diff($this->labelClasses, $class);
+    public function removeLabelClass($class)
+    {
+        if (!is_array($class)) {
+            $class = [$class];
+        }
 
-		return $this;
-	}
+        $this->labelClasses = array_diff($this->labelClasses, $class);
 
-	public function LabelAttributesHTML()
-	{
-		$attributes = $this->labelAttributes;
-		$attributes['class'] = isset($attributes['class']) ? $attributes['class'] . implode(' ', $this->labelClasses) : implode(' ', $this->labelClasses);
+        return $this;
+    }
 
-		return FormBootstrapper::get_attributes_for_tag($attributes, ['id', 'for']);
-	}
+    public function LabelAttributesHTML()
+    {
+        $attributes = $this->labelAttributes;
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . implode(' ',
+                $this->labelClasses) : implode(' ', $this->labelClasses);
 
-	public function setOptionAttribute($attribute, $value)
-	{
-		$this->optionAttributes[$attribute] = $value;
+        return FormBootstrapper::get_attributes_for_tag($attributes, ['id', 'for']);
+    }
 
-		return $this;
-	}
+    public function setOptionAttribute($attribute, $value)
+    {
+        $this->optionAttributes[$attribute] = $value;
 
-	public function removeOptionAttribute($attribute)
-	{
-		if(isset($this->optionAttributes[$attribute]))
-			unset($this->optionAttributes[$attribute]);
+        return $this;
+    }
 
-		return $this;
-	}
+    public function removeOptionAttribute($attribute)
+    {
+        if (isset($this->optionAttributes[$attribute])) {
+            unset($this->optionAttributes[$attribute]);
+        }
 
-	public function addOptionClass($class) {
-		$this->optionClasses = array_merge($this->optionClasses, is_array($class) ? $class : explode(' ', $class));
-		return $this;
-	}
+        return $this;
+    }
 
-	public function removeOptionClass($class) {
-		if(!is_array($class))
-			$class = [$class];
+    public function addOptionClass($class)
+    {
+        $this->optionClasses = array_merge($this->optionClasses, is_array($class) ? $class : explode(' ', $class));
+        return $this;
+    }
 
-		$this->optionClasses = array_diff($this->optionClasses, $class);
+    public function removeOptionClass($class)
+    {
+        if (!is_array($class)) {
+            $class = [$class];
+        }
 
-		return $this;
-	}
+        $this->optionClasses = array_diff($this->optionClasses, $class);
 
-	public function OptionAttributesHTML()
-	{
-		$attributes = $this->optionAttributes;
-		$attributes['class'] = isset($attributes['class']) ? $attributes['class'] . implode(' ', $this->optionClasses) : implode(' ', $this->optionClasses);
+        return $this;
+    }
 
-		if($this->original()->getAttribute('required'))
-			$attributes['required'] = $this->up()->getAttribute('required');
+    public function OptionAttributesHTML()
+    {
+        $attributes = $this->optionAttributes;
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . implode(' ',
+                $this->optionClasses) : implode(' ', $this->optionClasses);
 
-		return FormBootstrapper::get_attributes_for_tag($attributes, ['disabled', 'checked', 'selected', 'value', 'type', 'name', 'id']);
-	}
+        if ($this->original()->getAttribute('required')) {
+            $attributes['required'] = $this->up()->getAttribute('required');
+        }
 
-	protected function suffixTemplates(array $templates)
-	{
-		$new = [];
+        return FormBootstrapper::get_attributes_for_tag($attributes,
+            ['disabled', 'checked', 'selected', 'value', 'type', 'name', 'id', 'class']);
+    }
 
-		foreach ($templates as $template) {
-			$new[] = $template . $this->templateSuffix;
-		}
+    protected function suffixTemplates(array $templates)
+    {
+        $new = [];
 
-		return array_unique(array_merge($new, $templates));
-	}
+        foreach ($templates as $template) {
+            $new[] = str_replace('\\', '_', $template) . $this->templateSuffix;
+        }
 
-	public function collateDataFields(&$list, $saveableOnly = false)
-	{
-		return $this->original()->collateDataFields($list, $saveableOnly);
-	}
+        return array_unique(array_merge($new, $templates));
+    }
 
-	public function __toString()
-	{
-		return is_object($this->forTemplate()) ? $this->forTemplate()->Value : $this->FieldHolder();
-	}
+    public function collateDataFields(&$list, $saveableOnly = false)
+    {
+        return $this->original()->collateDataFields($list, $saveableOnly);
+    }
 
-	protected function getTargetFieldCondition($field, $state) {
+    public function __toString()
+    {
+        return is_object($this->forTemplate()) ? $this->forTemplate()->Value : $this->FieldHolder();
+    }
+
+    protected function getTargetFieldCondition($field, $state)
+    {
         FormBootstrapper::requirements();
 
-		if($field instanceof FormField) {
-			$prefix = strpos($state, '[') === 0 ? '' : ':';
+        if ($field instanceof FormField) {
+            $prefix = strpos($state, '[') === 0 ? '' : ':';
 
-			if($field->Form)
-				$condition = '#' . $field->ID() . $prefix . $state;
-			else
-				$condition = "[name='" . $field->ID() . "']" . $prefix . $state;
-		}
-		else
-			$condition = $field . ':' . $state;
+            if ($field->Form) {
+                $condition = '#' . $field->ID() . $prefix . $state;
+            } else {
+                $condition = "[name='" . $field->ID() . "']" . $prefix . $state;
+            }
+        } else {
+            $condition = $field . ':' . $state;
+        }
 
-		return $condition;
-	}
+        return $condition;
+    }
 
-    public function isButton($field = null) {
-        if(!$field) $field = $this->original();
+    public function isButton($field = null)
+    {
+        if (!$field) {
+            $field = $this->original();
+        }
         return $field instanceof FormAction || $field instanceof FormActionLink || $field instanceof FormActionNoValidation;
     }
 
-    public function isNonFormControl($field = null) {
-        if(!$field) $field = $this->original();
+    public function isNonFormControl($field = null)
+    {
+        if (!$field) {
+            $field = $this->original();
+        }
         return $field instanceof LiteralField || $field instanceof HeaderField || $field instanceof CompositeField || $field instanceof OptionsetField;
     }
 
-    public function isCheckbox($field = null) {
-        if(!$field) $field = $this->original();
+    public function isCheckbox($field = null)
+    {
+        if (!$field) {
+            $field = $this->original();
+        }
         return $field instanceof CheckboxSetField;
     }
 } 

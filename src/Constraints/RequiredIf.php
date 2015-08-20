@@ -2,7 +2,7 @@
 
 /**
  * Milkyway Multimedia
- * Constraint_RequiredIf.php
+ * RequiredIf.php
  *
  * @package milkyway-multimedia/ss-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
@@ -45,11 +45,12 @@ class RequiredIf extends ZenValidatorConstraint {
      * @return FormField
      */
     public function getTargetField() {
-        return $this->field instanceof \FormField ? $this->field : $this->field->getForm()->Fields()->dataFieldByName($this->targetField);
+        return $this->targetField instanceof \FormField ? $this->targetField : $this->field->getForm()->Fields()->dataFieldByName($this->targetField);
     }
 
     public function applyParsley(){
         parent::applyParsley();
+        $this->removeParsley();
 
         Requirements::insertHeadTags(sprintf('<script src="%s"></script>', SS_MWM_ZEN_FORMS_DIR . '/js/mwm.zen-forms.top.js'), SS_MWM_ZEN_FORMS_DIR . '/js/mwm.zen-forms.top.js');
         FormBootstrapper::requirements();

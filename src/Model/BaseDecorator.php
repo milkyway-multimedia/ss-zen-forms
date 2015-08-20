@@ -1,9 +1,13 @@
 <?php namespace Milkyway\SS\ZenForms\Model;
 
 require_once dirname(dirname(__FILE__)) . '/Traits/Decorator.php';
+require_once dirname(dirname(__FILE__)) . '/Traits/DecoratorConstructor.php';
+require_once dirname(dirname(__FILE__)) . '/Traits/ViewableDataDecorator.php';
 
 use Milkyway\SS\ZenForms\Contracts\Decorator;
 use Milkyway\SS\ZenForms\Traits\Decorator as CommonMethods;
+use Milkyway\SS\ZenForms\Traits\DecoratorConstructor as Constructor;
+use Milkyway\SS\ZenForms\Traits\ViewableDataDecorator as ViewableDataDecorator;
 
 use ViewableData;
 
@@ -14,27 +18,14 @@ use ViewableData;
  * @package milkyway-multimedia/ss-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-abstract class BaseDecorator extends ViewableData implements Decorator {
-   use CommonMethods;
+abstract class BaseDecorator extends ViewableData implements Decorator
+{
+    use Constructor, CommonMethods, ViewableDataDecorator {
+        Constructor::__construct as private __decorate;
+    }
 
     public function __construct($original) {
-        $this->pullUp = $original;
-        $this->failover = $original;
-        parent::__construct($original);
-    }
-
-    public function obj($fieldName, $arguments = null, $forceReturnedObject = true, $cache = false, $cacheName = null) {
-        $value = parent::obj($fieldName, $arguments, $forceReturnedObject, $cache, $cacheName);
-
-        if(!$value || !(is_object($value) && ($value instanceof ViewableData) && $value->exists())) {
-            return $this->pullUp->obj($fieldName, $arguments, $forceReturnedObject, $cache, $cacheName);
-        }
-        else {
-            return $value;
-        }
-    }
-
-    public function __call($method, $arguments) {
-        return call_user_func_array(array($this->pullUp, $method), $arguments);
+        parent::__construct();
+        $this->__decorate($original);
     }
 } 

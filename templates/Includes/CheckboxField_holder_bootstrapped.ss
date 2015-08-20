@@ -13,7 +13,7 @@
           $Field
         <% end_if %>
 
-	        <label for="$ID" class="help-inline control-label-right">
+	        <label for="$ID" class="help-inline control-label_right">
                 <% if $Label %>$Label<% else %>$Title<% end_if %>
                 <% if $Label || $Title %>
                     <% if $Form && $Form.AppendToRequiredLabels && $isRequired %> $Form.AppendToRequiredLabels<% end_if %>

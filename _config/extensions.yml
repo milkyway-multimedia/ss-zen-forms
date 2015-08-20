@@ -4,12 +4,12 @@ After: 'framework/*'
 ---
 ConfirmedPasswordField:
   extensions:
-    - \Milkyway\SS\ZenForms\Extensions\ConfirmedPasswordField
+    - Milkyway\SS\ZenForms\Extensions\ConfirmedPasswordField
 FormField:
   allowed_actions:
     - verify
   extensions:
-    - \Milkyway\SS\ZenForms\Extensions\FormField
+    - Milkyway\SS\ZenForms\Extensions\FormField
 Form:
   extensions:
-    - \Milkyway\SS\ZenForms\Extensions\Form
+    - Milkyway\SS\ZenForms\Extensions\Form

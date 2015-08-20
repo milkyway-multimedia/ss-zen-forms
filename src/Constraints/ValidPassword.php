@@ -15,13 +15,13 @@ class ValidPassword extends ZenValidatorConstraint {
     protected $validator = null;
 
     /** @var float This is only used by the JS plugin - and is more of a guide */
-    protected $strengthScaleFactor = 0.4;
+    protected $strengthScaleFactor = 0.35;
 
     /**
      * @param \PasswordValidator $validator
      * @param float $strengthScaleFactor
      **/
-    function __construct($validator, $strengthScaleFactor = 0.4){
+    function __construct($validator, $strengthScaleFactor = 0.35){
         $this->validator = $validator;
         $this->strengthScaleFactor = 0.4;
         parent::__construct();
@@ -34,13 +34,13 @@ class ValidPassword extends ZenValidatorConstraint {
 
         $this->field->addExtraClass('form-control_with-password-measure');
 
-        $this->field->setAttribute('data-parsley-validpassword', json_encode(array_merge($this->validator->SettingsForJS, ['strengthScaleFactor' => $this->strengthScaleFactor])));
+        $this->field->setAttribute('data-parsley-password', json_encode(array_merge($this->validator->getSettingsForJS(), ['strengthScaleFactor' => $this->strengthScaleFactor])));
 
         $trigger = $this->field->getAttribute('data-parsley-trigger');
         $this->field->setAttribute('data-parsley-trigger', trim($trigger . ' keyup'));
 
-        if(!$this->field->getAttribute('data-parsley-validpassword-message'))
-            $this->field->setAttribute('data-parsley-validpassword-message', $this->getMessage());
+        if(!$this->field->getAttribute('data-parsley-password-message'))
+            $this->field->setAttribute('data-parsley-password-message', $this->getMessage());
     }
 
 
@@ -49,8 +49,8 @@ class ValidPassword extends ZenValidatorConstraint {
 
         $this->field->removeExtraClass('form-control_with-password-measure');
 
-        $this->field->setAttribute('data-parsley-validpassword', '');
-        $this->field->setAttribute('data-parsley-validpassword-message', '');
+        $this->field->setAttribute('data-parsley-password', '');
+        $this->field->setAttribute('data-parsley-password-message', '');
         $this->field->setAttribute('data-parsley-trigger', trim(str_replace('keyup', '', $this->field->getAttribute('data-parsley-trigger'))));
     }
 
@@ -66,7 +66,7 @@ class ValidPassword extends ZenValidatorConstraint {
 
 
     function getDefaultMessage(){
-        $settings = $this->validator->SettingsForJS;
+        $settings = $this->validator->getSettingsForJS();
         $message = [];
         $label = $this->field->Title();
 
@@ -84,7 +84,7 @@ class ValidPassword extends ZenValidatorConstraint {
         if(isset($settings['minimumScore'])) {
             $message[] = _t(
                 'ValidPassword.DESC-PASSWORD_MINIMUM_SCORE',
-                '{field} must pass at least {score} of the following requirements',
+                '{field} must pass at least {score} of the following requirements: ',
                 [
                     'field' => $label,
                     'score' => $settings['minimumScore'],

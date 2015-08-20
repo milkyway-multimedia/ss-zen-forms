@@ -11,7 +11,8 @@
 use \Milkyway\SS\ZenForms\Model\AbstractFormDecorator;
 use \Milkyway\SS\ZenForms\Contracts\Decorator;
 
-class FormBootstrapper extends AbstractFormDecorator {
+class FormBootstrapper extends AbstractFormDecorator
+{
     protected static $disallowed_template_classes = [
         'Object',
         'ViewableData',
@@ -20,33 +21,35 @@ class FormBootstrapper extends AbstractFormDecorator {
 
     public $template = 'Form_bootstrapped';
 
-    public static function reset_template_for(Decorator $item, $templateName) {
+    public static function reset_template_for(Decorator $item, $templateName)
+    {
         $originalTemplates = $item->up()->getTemplate();
         $originalItemClass = get_class($item->original());
 
-        if(is_array($originalTemplates)) {
+        if (is_array($originalTemplates)) {
             $template = array_pop($originalTemplates);
-        }
-        else {
+        } else {
             $template = $originalTemplates;
             $originalTemplates = [];
         }
 
         $templates = [];
 
-        if($template && !in_array($template, [$originalItemClass, 'Form']))
+        if ($template && !in_array($template, [$originalItemClass, 'Form'])) {
             $templates[] = $template;
+        }
 
-        if(is_string($templateName))
+        if (is_string($templateName)) {
             $templates[] = $templateName;
-        else
+        } else {
             $templates = array_merge($templates, $templateName);
+        }
 
         $templates = array_merge($templates, $originalTemplates);
 
         $parentClass = $originalItemClass;
 
-        while($parentClass && !in_array($parentClass, static::$disallowed_template_classes)) {
+        while ($parentClass && !in_array($parentClass, static::$disallowed_template_classes)) {
             $templates[] = $parentClass;
             $parentClass = get_parent_class($parentClass);
         }
@@ -54,51 +57,58 @@ class FormBootstrapper extends AbstractFormDecorator {
         return array_filter(array_unique($templates));
     }
 
-    public static function get_attributes_from_tag($tag) {
-        $attributes = array();
+    public static function get_attributes_from_tag($tag)
+    {
+        $attributes = [];
         parse_str($tag, $attributes);
         return array_map(
-            function($v) {
+            function ($v) {
                 return trim($v, '"');
             }, $attributes);
     }
 
-    public static function get_attributes_for_tag(array $attributes, $exclude = array()) {
+    public static function get_attributes_for_tag(array $attributes, $exclude = [])
+    {
         // Remove empty
-        $attributes = array_filter((array)$attributes, function($v) {
-                return ($v || $v === 0 || $v === '0');
-            }
+        $attributes = array_filter((array)$attributes, function ($v) {
+            return ($v || $v === 0 || $v === '0');
+        }
         );
 
         // Remove excluded
-        if($exclude)
+        if ($exclude) {
             $attributes = array_diff_key($attributes, array_flip($exclude));
+        }
 
         // Create mark up
-        $parts = array();
-        foreach($attributes as $name => $value) {
+        $parts = [];
+        foreach ($attributes as $name => $value) {
             $parts[] = ($value === true) ? "{$name}=\"{$name}\"" : "{$name}=\"" . Convert::raw2att($value) . "\"";
         }
 
         return implode(' ', $parts);
     }
 
-    public static function requirements() {
+    public static function requirements()
+    {
         Requirements::javascript(THIRDPARTY_DIR . '/jquery/jquery.js');
         Requirements::javascript(SS_MWM_ZEN_FORMS_DIR . '/js/mwm.zen-forms.js');
     }
 
-    public function getTemplate() {
+    public function getTemplate()
+    {
         return static::reset_template_for($this, $this->template);
     }
 
-    public function ajaxify() {
+    public function ajaxify()
+    {
         static::requirements();
-        $this->up()->addExtraClass('ajax-submit');
+        $this->addExtraClass('ajax-submit');
         return $this;
     }
 
-    public function __construct($original) {
+    public function __construct($original)
+    {
         parent::__construct($original);
 
         FieldListBootstrapper::decorate($original->Fields());

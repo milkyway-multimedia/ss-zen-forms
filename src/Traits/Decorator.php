@@ -4,7 +4,7 @@
  * Milkyway Multimedia
  * Decorator.php
  *
- * @package milkywaymultimedia.com.au
+ * @package milkyway-multimedia/ss-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
 

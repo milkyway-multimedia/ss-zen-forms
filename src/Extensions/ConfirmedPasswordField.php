@@ -1,21 +1,20 @@
 <?php namespace Milkyway\SS\ZenForms\Extensions;
 
 use Extension;
-use Member;
 use HiddenField;
+use FormFieldBootstrapper;
 
-class ConfirmedPasswordField extends Extension {
+class ConfirmedPasswordField extends Extension
+{
 
     protected $usePasswordGenerator = false;
-    protected $measurePasswordStrength = true;
-    protected $measurePasswordValidator = null;
+    protected $measurePasswordStrength = false;
 
     public function getLabel()
     {
-        if ($title = $this->owner->Title())
+        if ($title = $this->owner->Title()) {
             return $title;
-        elseif ($field = $this->owner->PasswordField)
-        {
+        } elseif ($field = $this->owner->PasswordField) {
             return $field->Title();
         }
 
@@ -24,20 +23,11 @@ class ConfirmedPasswordField extends Extension {
 
     public function getLabelFor()
     {
-        if ($field = $this->owner->PasswordField)
+        if ($field = $this->owner->PasswordField) {
             return $field->ID();
-        else
+        } else {
             return $this->owner->ID();
-    }
-
-    public function addPasswordStrengthHelper($text = '')
-    {
-        $this->owner->PasswordStrengthHelper = $text ? $text : _t(
-            'ConfirmedPasswordField.PASSWORD_STRENGTH_HELPER',
-            '[strength]'
-        );
-
-        return $this->owner;
+        }
     }
 
     function usePasswordGenerator($do = true)
@@ -47,11 +37,9 @@ class ConfirmedPasswordField extends Extension {
         return $this->owner;
     }
 
-    function measurePasswordStrength($do = true, $validator = null)
+    function measurePasswordStrength($do = true)
     {
-        $this->measurePasswordStrength  = $do;
-        $this->measurePasswordValidator = $validator;
-
+        $this->measurePasswordStrength = $do;
         return $this->owner;
     }
 
@@ -62,13 +50,12 @@ class ConfirmedPasswordField extends Extension {
 
     public function getVisibleOnClickField()
     {
-        $name  = $this->owner->getName() . '[_PasswordFieldVisible]';
+        $name = $this->owner->getName() . '[_PasswordFieldVisible]';
         $field = $this->owner->children->fieldByName($name);
 
         // Transforming hidden field to checkbox
-        if ($field instanceof \HiddenField)
-        {
-            $title    = $this->owner->ShowOnClickTitle ? $this->owner->ShowOnClickTitle : _t(
+        if ($field instanceof \HiddenField) {
+            $title = $this->owner->ShowOnClickTitle ? $this->owner->ShowOnClickTitle : _t(
                 'ConfirmedPasswordField.CHANGE_YOUR_PASSWORD',
                 'Change your password'
             );
@@ -77,24 +64,34 @@ class ConfirmedPasswordField extends Extension {
             )->removeExtraClass('hidden')->addExtraClass('visible-if-trigger');
             $this->owner->children->replaceField($name, $checkbox);
             //$this->owner->setHolderAttribute('data-show-if', '#' . $checkbox->ID() . ':checked');
-        } else
+        } else {
             $checkbox = $field;
+        }
 
         return $checkbox;
     }
 
     public function getPasswordField()
     {
-        $field = $this->owner->children->fieldByName($this->owner->getName() . '[_Password]');
-        $field->addExtraClass('form-control_password password-measure');
-
-        return $field;
+        return $this->owner->children->fieldByName($this->owner->getName() . '[_Password]')->setForm($this->owner->Form);
     }
 
     public function getConfirmPasswordField()
     {
-        $field = $this->owner->children->fieldByName($this->owner->Name . '[_ConfirmPassword]');
-        $field->addExtraClass('form-control_confirm-password');
-        return $field;
+        return $this->owner->children->fieldByName($this->owner->Name . '[_ConfirmPassword]')->setForm($this->owner->Form);
+    }
+
+    public function onBeforeRenderFieldHolder($decorator)
+    {
+        if ($decorator instanceof FormFieldBootstrapper) {
+            $this->owner->PasswordField->addExtraClass('form-control_password');
+            $this->owner->ConfirmPasswordField->addExtraClass('form-control_confirm-password');
+
+            $decorator->removeHolderClass('form-group')->addHolderClass('form-group-holder');
+
+            if ($this->measurePasswordStrength && ($this->owner->PasswordField instanceof FormFieldBootstrapper)) {
+                $this->owner->PasswordField->addHolderClass('password-measure--holder')->addExtraClass('password-measure');
+            }
+        }
     }
 }

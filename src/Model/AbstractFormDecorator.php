@@ -1,44 +1,37 @@
 <?php namespace Milkyway\SS\ZenForms\Model;
 
-require_once dirname(dirname(__FILE__)) . '/Traits/Decorator.php';
-
-use Milkyway\SS\ZenForms\Contracts\Decorator;
-use \Milkyway\SS\ZenForms\Traits\Decorator as CommonMethods;
-
-use SSViewer;
-use RequestHandler;
-use SS_HTTPRequest;
-use DataModel;
-
 /**
  * Milkyway Multimedia
  * AbstractFormDecorator.php
  *
- * @todo One of these days some of this will used as a trait
- *
  * @package milkyway-multimedia/ss-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-abstract class AbstractFormDecorator extends RequestHandler implements Decorator {
-    use CommonMethods;
 
-    public function __construct($original) {
-        $this->pullUp = $original;
-        $this->failover = $original;
-        parent::__construct();
+require_once dirname(dirname(__FILE__)) . '/Traits/Decorator.php';
+require_once dirname(dirname(__FILE__)) . '/Traits/DecoratorConstructor.php';
+require_once dirname(dirname(__FILE__)) . '/Traits/ViewableDataDecorator.php';
+require_once dirname(dirname(__FILE__)) . '/Traits/RequestHandlerDecorator.php';
+
+use Milkyway\SS\ZenForms\Contracts\Decorator;
+use Milkyway\SS\ZenForms\Traits\Decorator as CommonMethods;
+use Milkyway\SS\ZenForms\Traits\DecoratorConstructor as Constructor;
+use Milkyway\SS\ZenForms\Traits\ViewableDataDecorator as ViewableDataDecorator;
+use Milkyway\SS\ZenForms\Traits\RequestHandlerDecorator as RequestHandlerDecorator;
+
+use SSViewer;
+use RequestHandler;
+
+abstract class AbstractFormDecorator extends RequestHandler implements Decorator
+{
+    use Constructor, CommonMethods, ViewableDataDecorator, RequestHandlerDecorator {
+        Constructor::__construct as private __decorate;
     }
 
-    /**
-     * Iterate until we reach the original object
-     * A bit hacky but if it works, it works
-     *
-     * @param SS_HTTPRequest $request
-     * @param DataModel      $model
-     *
-     * @return array|\RequestHandler|\SS_HTTPResponse|string
-     */
-    public function handleRequest(SS_HTTPRequest $request, DataModel $model) {
-        return $this->original()->handleRequest($request, $model);
+    public function __construct($original)
+    {
+        parent::__construct();
+        $this->__decorate($original);
     }
 
     /**
@@ -53,11 +46,13 @@ abstract class AbstractFormDecorator extends RequestHandler implements Decorator
      *
      * @return string
      */
-    public function forTemplate() {
+    public function forTemplate()
+    {
         $return = $this->renderWith(array_merge(
-                (array)$this->getTemplate(),
-                array('Form')
-            ));
+            (array)$this->getTemplate(),
+            ['Form']
+        ));
+
 
         // Now that we're rendered, clear message
         $this->clearMessage();
@@ -73,11 +68,12 @@ abstract class AbstractFormDecorator extends RequestHandler implements Decorator
      *
      * @return string
      */
-    public function forAjaxTemplate() {
-        $view = new SSViewer(array(
+    public function forAjaxTemplate()
+    {
+        $view = new SSViewer([
             $this->getTemplate(),
-            'Form'
-        ));
+            'Form',
+        ]);
 
         $return = $view->dontRewriteHashlinks()->process($this);
 
@@ -96,13 +92,14 @@ abstract class AbstractFormDecorator extends RequestHandler implements Decorator
      *
      * @return string
      */
-    public function formHtmlContent() {
+    public function formHtmlContent()
+    {
         $this->IncludeFormTag = false;
         $content = $this->forTemplate();
         $this->IncludeFormTag = true;
 
         $content .= "<input type=\"hidden\" name=\"_form_action\" id=\"" . $this->FormName . "_form_action\""
-                    . " value=\"" . $this->FormAction() . "\" />\n";
+            . " value=\"" . $this->FormAction() . "\" />\n";
         $content .= "<input type=\"hidden\" name=\"_form_name\" value=\"" . $this->FormName() . "\" />\n";
         $content .= "<input type=\"hidden\" name=\"_form_method\" value=\"" . $this->FormMethod() . "\" />\n";
         $content .= "<input type=\"hidden\" name=\"_form_enctype\" value=\"" . $this->getEncType() . "\" />\n";
@@ -120,23 +117,21 @@ abstract class AbstractFormDecorator extends RequestHandler implements Decorator
      *
      * @return string
      */
-    public function renderWithoutActionButton($template) {
-        $custom = $this->customise(array(
-                "Actions" => "",
-            ));
+    public function renderWithoutActionButton($template)
+    {
+        $custom = $this->customise([
+            "Actions" => "",
+        ]);
 
-        if(is_string($template)) {
+        if (is_string($template)) {
             $template = new SSViewer($template);
         }
 
         return $template->process($custom);
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return is_object($this->forTemplate()) ? $this->forTemplate()->Value : $this->forTemplate();
-    }
-
-    public function hasMethod($method) {
-        return $this->up()->hasMethod($method) || parent::hasMethod($method);
     }
 } 

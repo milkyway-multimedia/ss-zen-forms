@@ -1,4 +1,5 @@
 <?php namespace Milkyway\SS\ZenForms\Model;
+
 /**
  * Milkyway Multimedia
  * AbstractFormFieldDecorator.php
@@ -6,7 +7,34 @@
  * @package milkyway-multimedia/ss-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  */
-abstract class AbstractFormFieldDecorator extends BaseDecorator {
+
+require_once dirname(dirname(__FILE__)) . '/Traits/Decorator.php';
+require_once dirname(dirname(__FILE__)) . '/Traits/DecoratorConstructor.php';
+require_once dirname(dirname(__FILE__)) . '/Traits/ViewableDataDecorator.php';
+require_once dirname(dirname(__FILE__)) . '/Traits/RequestHandlerDecorator.php';
+
+use Milkyway\SS\ZenForms\Traits\Decorator as CommonMethods;
+use Milkyway\SS\ZenForms\Traits\DecoratorConstructor as Constructor;
+use Milkyway\SS\ZenForms\Traits\ViewableDataDecorator as ViewableDataDecorator;
+use Milkyway\SS\ZenForms\Traits\RequestHandlerDecorator as RequestHandlerDecorator;
+
+use RequestHandler;
+
+use ReflectionClass;
+
+abstract class AbstractFormFieldDecorator extends RequestHandler
+{
+    use Constructor, CommonMethods, ViewableDataDecorator, RequestHandlerDecorator {
+        Constructor::__construct as private __decorate;
+    }
+
+    protected $customisations = [];
+
+    public function __construct($original) {
+        parent::__construct();
+        $this->__decorate($original);
+    }
+
     /**
      * The following methods override the render of the field, to use the methods
      * of the decorator(s) rather than the field methods when required
@@ -22,10 +50,29 @@ abstract class AbstractFormFieldDecorator extends BaseDecorator {
      * @param array $properties key value pairs of template variables
      * @return string
      */
-//    public function Field($properties = array()) {
-//        $this->original()->setTemplate($this->getTemplates());
-//        return $this->original()->Field($properties);
-//    }
+    public function Field($properties = [])
+    {
+        $obj = ($properties) ? $this->customise($properties) : $this;
+
+        $class = new ReflectionClass($this->original());
+        $method = $class->getMethod(__FUNCTION__);
+
+        if ($method->class != 'FormField') {
+            if (!$this->original()->Template) {
+                $template = $this->getTemplates();
+                $this->original()->Template = array_shift($template);
+            }
+
+            $customisations = [];
+
+            foreach($this->customisations as $customisation)
+                $customisations[$customisation] = $this->$customisation();
+
+            return $this->original()->customise($customisations)->Field($properties);
+        } else {
+            return $obj->renderWith($this->getTemplates());
+        }
+    }
 
     /**
      * Returns a "field holder" for this field - used by templates.
@@ -37,9 +84,30 @@ abstract class AbstractFormFieldDecorator extends BaseDecorator {
      * @param array $properties key value pairs of template variables
      * @return string
      */
-    public function FieldHolder($properties = array()) {
+    public function FieldHolder($properties = [])
+    {
         $obj = ($properties) ? $this->customise($properties) : $this;
-        return $obj->renderWith($this->getFieldHolderTemplates());
+
+        $class = new ReflectionClass($this->original());
+        $method = $class->getMethod(__FUNCTION__);
+
+        $this->original()->extend('onBeforeRenderFieldHolder', $this, $properties);
+
+        if ($method->class != 'FormField') {
+            if (!$this->original()->FieldHolderTemplate) {
+                $template = $this->getFieldHolderTemplates();
+                $this->original()->FieldHolderTemplate = array_shift($template);
+            }
+
+            $customisations = [];
+
+            foreach($this->customisations as $customisation)
+                $customisations[$customisation] = $this->$customisation();
+
+            return $this->original()->customise($customisations)->FieldHolder($properties);
+        } else {
+            return $obj->renderWith($this->getFieldHolderTemplates());
+        }
     }
 
     /**
@@ -49,9 +117,33 @@ abstract class AbstractFormFieldDecorator extends BaseDecorator {
      *
      * @return string
      */
-    public function SmallFieldHolder($properties = array()) {
+    public function SmallFieldHolder($properties = [])
+    {
         $obj = ($properties) ? $this->customise($properties) : $this;
 
-        return $obj->renderWith($this->getSmallFieldHolderTemplates());
+        $class = new ReflectionClass($this->original());
+        $method = $class->getMethod(__FUNCTION__);
+
+        $this->original()->extend('onBeforeRenderSmallFieldHolder', $this, $properties);
+
+        if ($method->class != 'FormField') {
+            if (!$this->original()->SmallFieldHolderTemplate) {
+                $template = $this->getSmallFieldHolderTemplates();
+                $this->original()->SmallFieldHolderTemplate = array_shift($template);
+            }
+
+            $customisations = [];
+
+            foreach($this->customisations as $customisation)
+                $customisations[$customisation] = $this->$customisation();
+
+            return $this->original()->customise($customisations)->SmallFieldHolder($properties);
+        } else {
+            return $obj->renderWith($this->getSmallFieldHolderTemplates());
+        }
+    }
+
+    public function forTemplate() {
+        return $this->Field();
     }
 } 

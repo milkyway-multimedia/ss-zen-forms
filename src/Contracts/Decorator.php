@@ -4,8 +4,9 @@
  * Decorator.php
  *
  * For ease of use, the decorator should have magic methods set on it.
+ * See the Traits included for some ideas on magic methods.
  *
- * @package milkyway-multimedia/silverstripe-zen-forms
+ * @package milkyway-multimedia/ss-zen-forms
  * @author Mellisa Hankins <mell@milkywaymultimedia.com.au>
  *
  */
