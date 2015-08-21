@@ -75,6 +75,10 @@ class FormFieldBootstrapper extends AbstractFormFieldDecorator
         if ($this->isCheckbox($field)) {
             $field->addExtraClass('checkbox');
         }
+
+        if($this->MessageType() == 'required') {
+            $this->addHolderClass('has-error');
+        }
     }
 
     public function getFieldHolderTemplates()
