@@ -43,6 +43,24 @@ class RequiredIf extends ZenValidatorConstraint
         parent::__construct();
     }
 
+    public function setCondition($condition) {
+        $this->condition = $condition;
+        return $this;
+    }
+
+    public function getCondition() {
+        return $this->condition;
+    }
+
+    public function setParam($param) {
+        $this->param = $param;
+        return $this;
+    }
+
+    public function getParam() {
+        return $this->param;
+    }
+
     /**
      * @return FormField
      */
@@ -63,20 +81,20 @@ class RequiredIf extends ZenValidatorConstraint
         $this->field->setAttribute('data-parsley-validate-if-empty', 'true');
 
         if ($requiredIf = $this->field->getAttribute('data-parsley-requiredif')) {
-            $this->field->setAttribute('data-parsley-requiredif',
-                $requiredIf . ',' . $this->getTargetFieldWithCondition());
+            $this->field->setAttribute('data-parsley-' . $this->getConstraintName(),
+                trim($requiredIf . ',' . $this->getTargetFieldWithCondition(), ' ,'));
         } else {
-            $this->field->setAttribute('data-parsley-requiredif', $this->getTargetFieldWithCondition());
+            $this->field->setAttribute('data-parsley-' . $this->getConstraintName(), $this->getTargetFieldWithCondition());
         }
 
         $message = $this->getMessage();
 
-        if (!$this->field->getAttribute('data-parsley-requiredif-message')) {
-            $this->field->setAttribute('data-parsley-requiredif-message', $message);
+        if (!$this->field->getAttribute('data-parsley-' . $this->getConstraintName() . '-message')) {
+            $this->field->setAttribute('data-parsley-' . $this->getConstraintName() . '-message', $message);
         } else {
-            if (strpos($this->field->getAttribute('data-parsley-requiredif-message'), $message) !== false) {
-                $this->field->setAttribute('data-parsley-requiredif-message',
-                    $this->field->getAttribute('data-parsley-requiredif-message') . ', ' . $message);
+            if (strpos($this->field->getAttribute('data-parsley-' . $this->getConstraintName() . '-message'), $message) !== false) {
+                $this->field->setAttribute('data-parsley-' . $this->getConstraintName() . '-message',
+                    $this->field->getAttribute('data-parsley-' . $this->getConstraintName() . '-message') . ', ' . $message);
             }
         }
     }
@@ -86,13 +104,13 @@ class RequiredIf extends ZenValidatorConstraint
     {
         parent::removeParsley();
 
-        if ($requiredIf = $this->field->getAttribute('data-parsley-requiredif')) {
-            $this->field->setAttribute('data-parsley-requiredif',
+        if ($requiredIf = $this->field->getAttribute('data-parsley-' . $this->getConstraintName())) {
+            $this->field->setAttribute('data-parsley-' . $this->getConstraintName(),
                 trim(str_replace(',,', ',', str_replace($this->getTargetFieldWithCondition(), '', $requiredIf))), ' ,');
         }
 
-        if (!$this->field->getAttribute('data-parsley-requiredif')) {
-            $this->field->setAttribute('data-parsley-requiredif-message', '');
+        if (!$this->field->getAttribute('data-parsley-' . $this->getConstraintName())) {
+            $this->field->setAttribute('data-parsley-' . $this->getConstraintName() . '-message', '');
         }
     }
 
@@ -285,5 +303,9 @@ class RequiredIf extends ZenValidatorConstraint
                 return str_replace('-', ' ', $this->condition);
                 break;
         }
+    }
+
+    public function getConstraintName() {
+        return 'requiredif';
     }
 } 

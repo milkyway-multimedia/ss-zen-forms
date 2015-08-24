@@ -127,4 +127,8 @@ class ValidPassword extends ZenValidatorConstraint {
 
         return implode(' ', $message);
     }
+
+    public function getConstraintName() {
+        return 'password';
+    }
 } 

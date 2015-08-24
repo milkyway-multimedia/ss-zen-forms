@@ -97,4 +97,8 @@ class ConfirmPassword extends ZenValidatorConstraint
         return sprintf(_t('ZenValidator.EQUALTO', 'This value should be the same as the field %s'),
             $this->field->PasswordField->Title());
     }
+
+    public function getConstraintName() {
+        return 'equalto';
+    }
 }
