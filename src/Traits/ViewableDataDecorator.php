@@ -11,6 +11,8 @@
 use ViewableData;
 
 trait ViewableDataDecorator {
+    public $templateSuffix = '_bootstrapped';
+
     public function obj($fieldName, $arguments = null, $forceReturnedObject = true, $cache = false, $cacheName = null) {
         $value = parent::obj($fieldName, $arguments, $forceReturnedObject, $cache, $cacheName);
 
@@ -35,5 +37,16 @@ trait ViewableDataDecorator {
         }
 
         return $return;
+    }
+
+    protected function suffixTemplates(array $templates)
+    {
+        $new = [];
+
+        foreach ($templates as $template) {
+            $new[] = str_replace('\\', '_', $template) . $this->templateSuffix;
+        }
+
+        return array_unique(array_merge($new, $templates));
     }
 }

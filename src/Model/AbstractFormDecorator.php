@@ -53,7 +53,6 @@ abstract class AbstractFormDecorator extends RequestHandler implements Decorator
             ['Form']
         ));
 
-
         // Now that we're rendered, clear message
         $this->clearMessage();
 

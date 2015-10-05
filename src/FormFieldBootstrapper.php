@@ -12,8 +12,6 @@ use Milkyway\SS\ZenForms\Model\AbstractFormFieldDecorator;
 
 class FormFieldBootstrapper extends AbstractFormFieldDecorator
 {
-    public $templateSuffix = '_bootstrapped';
-
     protected $holderAttributes = [];
     protected $holderClasses = [
         'form-group',
@@ -64,6 +62,7 @@ class FormFieldBootstrapper extends AbstractFormFieldDecorator
 
         if ($this->isButton($field)) {
             $this->addExtraClass('btn');
+            $this->UseButtonTag = true;
 
             if (!$this->getAttribute('data-loading-text')) {
                 $this->setAttribute('data-loading-text', _t('LOADING...', 'Loading...'));
@@ -236,17 +235,6 @@ class FormFieldBootstrapper extends AbstractFormFieldDecorator
 
         return FormBootstrapper::get_attributes_for_tag($attributes,
             ['disabled', 'checked', 'selected', 'value', 'type', 'name', 'id', 'class']);
-    }
-
-    protected function suffixTemplates(array $templates)
-    {
-        $new = [];
-
-        foreach ($templates as $template) {
-            $new[] = str_replace('\\', '_', $template) . $this->templateSuffix;
-        }
-
-        return array_unique(array_merge($new, $templates));
     }
 
     public function collateDataFields(&$list, $saveableOnly = false)

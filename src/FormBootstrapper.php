@@ -19,44 +19,6 @@ class FormBootstrapper extends AbstractFormDecorator
         'RequestHandler',
     ];
 
-    public $template = 'Form_bootstrapped';
-
-    public static function reset_template_for(Decorator $item, $templateName)
-    {
-        $originalTemplates = $item->up()->getTemplate();
-        $originalItemClass = get_class($item->original());
-
-        if (is_array($originalTemplates)) {
-            $template = array_pop($originalTemplates);
-        } else {
-            $template = $originalTemplates;
-            $originalTemplates = [];
-        }
-
-        $templates = [];
-
-        if ($template && !in_array($template, [$originalItemClass, 'Form'])) {
-            $templates[] = $template;
-        }
-
-        if (is_string($templateName)) {
-            $templates[] = $templateName;
-        } else {
-            $templates = array_merge($templates, $templateName);
-        }
-
-        $templates = array_merge($templates, $originalTemplates);
-
-        $parentClass = $originalItemClass;
-
-        while ($parentClass && !in_array($parentClass, static::$disallowed_template_classes)) {
-            $templates[] = $parentClass;
-            $parentClass = get_parent_class($parentClass);
-        }
-
-        return array_filter(array_unique($templates));
-    }
-
     public static function get_attributes_from_tag($tag)
     {
         $attributes = [];
@@ -97,7 +59,7 @@ class FormBootstrapper extends AbstractFormDecorator
 
     public function getTemplate()
     {
-        return static::reset_template_for($this, $this->template);
+        return $this->suffixTemplates(array_merge((array)$this->up()->getTemplate(), ['Form']));
     }
 
     public function ajaxify()
