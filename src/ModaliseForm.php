@@ -10,14 +10,13 @@
 
 class ModaliseForm extends FormBootstrapper
 {
-    public $template = ['Form_Modal', 'Form_Bootstrapped'];
-
     public $title;
 
     public function __construct($original, $title = '')
     {
         parent::__construct($original);
         $this->title = $title;
+        $this->templateSuffix = '_Modal';
     }
 
     public function getFormModalTitle()
