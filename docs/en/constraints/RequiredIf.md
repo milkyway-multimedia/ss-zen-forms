@@ -2,6 +2,8 @@ RequiredIf
 ==========
 When you add this constraint, you can restrict a field depending on the state of another field.
 
+NOTE: **This will pass if any states are true**. Use RequiredIfStrict if all states must be true.
+
 ## Usage
 
 ```

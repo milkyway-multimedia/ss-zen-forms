@@ -82,7 +82,8 @@ This module automatically pulls in the [Silverstripe ZenValidator](https://githu
 
 * [Milkyway\SS\ZenForms\Constraints\RequiredIf](docs/en/constraints/RequiredIf.md)
 * [Milkyway\SS\ZenForms\Constraints\ValidPassword](docs/en/constraints/ValidPassword.md)
-* [Milkyway\SS\ZenForms\Constraints\ValidPassword](docs/en/constraints/ConfirmPassword.md)
+* [Milkyway\SS\ZenForms\Constraints\ConfirmPassword](docs/en/constraints/ConfirmPassword.md)
+* [Milkyway\SS\ZenForms\Constraints\Multiple](docs/en/constraints/Multiple.md)
 
 ## ConfirmedPasswordField
 When you wrap the ConfirmedPasswordField, it allows you to use the password measure helper and password generator. It only works properly when wrapped with the FormFieldBootstrapper though, and you must include jquery.complexify.js in your scripts for it to work (it is not included with the module).
