@@ -92,7 +92,7 @@ When you wrap the ConfirmedPasswordField, it allows you to use the password meas
 * MIT
 
 ## Version 
-* Version 0.1 - Alpha
+* Version 0.2 (Alpha)
 
 ## Contact
 #### Milkyway Multimedia
