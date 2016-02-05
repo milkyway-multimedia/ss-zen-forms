@@ -39,7 +39,8 @@ class FieldListBootstrapper extends BaseDecorator
             }
 
             if ((!$field->hasData() || $field->isComposite()) && !($field instanceof FormFieldBootstrapper)) {
-                $fields->replace($field, FormFieldBootstrapper::create($field));
+                $class = $field->isComposite() && !$field->hasData() ? 'CompositeFormFieldBootstrapper' : 'FormFieldBootstrapper';
+                $fields->replace($field, Object::create($class, $field));
             } elseif (!($field instanceof FormFieldBootstrapper)) {
                 if ($applyToThis) {
                     $this->replaceField($field->Name, FormFieldBootstrapper::create($field));
@@ -76,4 +77,4 @@ class FieldListBootstrapper extends BaseDecorator
     {
         return !($field instanceof LiteralField || $field instanceof HeaderField);
     }
-} 
+}

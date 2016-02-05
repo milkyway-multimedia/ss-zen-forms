@@ -62,6 +62,7 @@ Below are some of the decorators that come with the module. There is more docume
 
 ### For Fields
 1. [FormFieldBoostrapper](docs/en/FormFieldBoostrapper.md): Set your field to use the Twitter Bootstrap Template scheme. This has a lot of code from UncleCheese's module.
+2. CompositeFormFieldBootstrapper: If you are using a composite field with actions linked to one of its children fields, you will need to use this decorator. It is automatically used when necessary with the FormBootstrapper and FieldListBootstrapper.
 
 To make your own, you can simply extend the specific Decorator, the BaseDecorator or implement \Milkyway\ZenForms\Contracts\Decorator.
 

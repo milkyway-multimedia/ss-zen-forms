@@ -24,4 +24,8 @@ trait RequestHandlerDecorator {
     public function handleRequest(SS_HTTPRequest $request, DataModel $model) {
         return $this->original()->handleRequest($request, $model);
     }
+
+    public function checkAccessAction($action) {
+        return parent::checkAccessAction($action) || $this->original()->checkAccessAction($action);
+    }
 }
