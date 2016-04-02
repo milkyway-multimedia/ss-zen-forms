@@ -133,4 +133,4 @@ abstract class AbstractFormDecorator extends RequestHandler implements Decorator
     {
         return is_object($this->forTemplate()) ? $this->forTemplate()->Value : $this->forTemplate();
     }
-} 
+}

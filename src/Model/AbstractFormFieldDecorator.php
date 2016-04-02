@@ -30,7 +30,8 @@ abstract class AbstractFormFieldDecorator extends RequestHandler
 
     protected $customisations = [];
 
-    public function __construct($original) {
+    public function __construct($original)
+    {
         parent::__construct();
         $this->__decorate($original);
     }
@@ -65,8 +66,9 @@ abstract class AbstractFormFieldDecorator extends RequestHandler
 
             $customisations = [];
 
-            foreach($this->customisations as $customisation)
+            foreach ($this->customisations as $customisation) {
                 $customisations[$customisation] = $this->$customisation();
+            }
 
             return $this->original()->customise($customisations)->Field($properties);
         } else {
@@ -101,8 +103,9 @@ abstract class AbstractFormFieldDecorator extends RequestHandler
 
             $customisations = [];
 
-            foreach($this->customisations as $customisation)
+            foreach ($this->customisations as $customisation) {
                 $customisations[$customisation] = $this->$customisation();
+            }
 
             return $this->original()->customise($customisations)->FieldHolder($properties);
         } else {
@@ -134,8 +137,9 @@ abstract class AbstractFormFieldDecorator extends RequestHandler
 
             $customisations = [];
 
-            foreach($this->customisations as $customisation)
+            foreach ($this->customisations as $customisation) {
                 $customisations[$customisation] = $this->$customisation();
+            }
 
             return $this->original()->customise($customisations)->SmallFieldHolder($properties);
         } else {
@@ -143,7 +147,8 @@ abstract class AbstractFormFieldDecorator extends RequestHandler
         }
     }
 
-    public function forTemplate() {
+    public function forTemplate()
+    {
         return $this->Field();
     }
-} 
+}

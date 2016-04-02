@@ -1,13 +1,13 @@
 <$Tag $AttributesHTML>
 <% if $Tag == 'fieldset' && $Legend %>
-	<legend>$Legend</legend>
+    <legend>$Legend</legend>
 <% end_if %>
 
 <% loop $FieldList %>
     <% if $Up.ColumnCount %>
-		<div class="column-{$ColumnCount} $FirstLast">
+        <div class="column-{$ColumnCount} $FirstLast">
             $FieldHolder
-		</div>
+        </div>
     <% else %>
         $FieldHolder
     <% end_if %>

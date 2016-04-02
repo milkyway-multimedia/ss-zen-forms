@@ -30,7 +30,7 @@ Add the following to your composer.json file
     "require"          : {
 		"milkyway-multimedia/silverstripe-zen-forms": "dev-master"
 	}
-	
+
 ```
 
 ## Usage
@@ -89,10 +89,10 @@ This module automatically pulls in the [Silverstripe ZenValidator](https://githu
 ## ConfirmedPasswordField
 When you wrap the ConfirmedPasswordField, it allows you to use the password measure helper and password generator. It only works properly when wrapped with the FormFieldBootstrapper though, and you must include jquery.complexify.js in your scripts for it to work (it is not included with the module).
 
-## License 
+## License
 * MIT
 
-## Version 
+## Version
 * Version 0.2 (Alpha)
 
 ## Contact

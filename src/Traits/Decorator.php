@@ -24,6 +24,7 @@ trait Decorator {
             return call_user_func_array(['Object', 'create'], array_merge([get_called_class()], $args));
 
         $item = $args[0];
+
         $alreadyHasDecorator = false;
 
         while($item instanceof Contract) {

@@ -76,4 +76,4 @@ class FormBootstrapper extends AbstractFormDecorator
         FieldListBootstrapper::decorate($original->Fields());
         FieldListBootstrapper::decorate($original->Actions());
     }
-} 
+}

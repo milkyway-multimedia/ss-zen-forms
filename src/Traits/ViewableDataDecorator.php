@@ -18,7 +18,7 @@ trait ViewableDataDecorator
     {
         $value = parent::obj($fieldName, $arguments, $forceReturnedObject, $cache, $cacheName);
 
-        if (!$value || (is_object($value) && ($value instanceof ViewableData) && !$value->exists())) {
+        if ($value === null || (is_object($value) && ($value instanceof ViewableData) && !$value->exists())) {
             return $this->up()->obj($fieldName, $arguments, $forceReturnedObject, $cache, $cacheName);
         } else {
             return $value;
