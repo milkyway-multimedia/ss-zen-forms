@@ -2,15 +2,15 @@
     "js":  [
         {
             "src": [
-                "bower_components/assets/javascript/selector-filters.js",
-                "bower_components/assets/javascript/forms.js",
-                "bower_components/assets/javascript/conditionals.js"
+                "node_modules/mwm.common/javascript/selector-filters.js",
+                "node_modules/mwm.common/javascript/forms.js",
+                "node_modules/mwm.common/javascript/conditionals.js"
             ],
             "dest":   "js/mwm.zen-forms.js"
         },
         {
             "src": [
-                "bower_components/assets/javascript/parsley-js/**/*"
+                "node_modules/mwm.common/javascript/parsley-js/**/*"
             ],
             "dest":   "js/mwm.zen-forms.top.js"
         }

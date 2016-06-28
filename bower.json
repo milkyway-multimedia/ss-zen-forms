@@ -1,7 +1,0 @@
-{
-    "name"         : "milkyway-multimedia/ss-zen-forms",
-    "private"      : true,
-    "devDependencies" : {
-        "assets": "git@bitbucket.org:milkyway-multimedia/mwm-common.git"
-    }
-}
